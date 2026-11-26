@@ -14,6 +14,7 @@ import { SearchScreen } from '../screens/SearchScreen';
 import { SmartListScreen } from '../screens/SmartListScreen';
 import { ResultsScreen } from '../screens/ResultsScreen';
 import { PreferencesScreen } from '../screens/PreferencesScreen';
+import { ScanScreen } from '../screens/ScanScreen';
 import type { RootStackParamList, TabParamList } from './types';
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -46,6 +47,7 @@ export function RootNavigator() {
       <Stack.Screen name="Basket" component={BasketScreen} options={{ title: t.basketTitle }} />
       <Stack.Screen name="Results" component={ResultsScreen} options={{ title: t.cmp.title }} />
       <Stack.Screen name="Preferences" component={PreferencesScreen} options={{ title: t.prefs.title }} />
+      <Stack.Screen name="Scan" component={ScanScreen} options={{ title: t.scan.title }} />
     </Stack.Navigator>
   );
 }

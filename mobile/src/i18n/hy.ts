@@ -151,6 +151,17 @@ export const hy = {
     CATALOG_UNAVAILABLE: 'Կատալոգը հասանելի չէ',
     NOT_INTEGRATED: 'Միացված չէ',
   } as Record<string, string>,
+  scan: {
+    title: 'Սկանավորել բարկոդը',
+    button: 'Սկանավորել',
+    hint: 'Ուղղեք տեսախցիկը ապրանքի բարկոդին',
+    needPermission: 'Բարկոդը սկանավորելու համար անհրաժեշտ է տեսախցիկի թույլտվություն',
+    grant: 'Թույլատրել',
+    looking: 'Որոնում…',
+    notFound: (code: string) => `${code} բարկոդով ապրանք չի գտնվել։ Բարկոդներ հրապարակում են ոչ բոլոր խանութները։`,
+    searchByName: 'Որոնել անունով',
+    again: 'Կրկին սկանավորել',
+  },
   catalogState: {
     COMPLETE: 'ամբողջական',
     PARTIAL: 'մասնակի',

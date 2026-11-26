@@ -30,7 +30,14 @@
     },
     "plugins": [
       "expo-asset",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Տեսախցիկն օգտագործվում է ապրանքի բարկոդը սկանավորելու և գները համեմատելու համար։ / The camera is used to scan product barcodes and compare prices.",
+          "recordAudioAndroid": false
+        }
+      ]
     ]
   }
 }

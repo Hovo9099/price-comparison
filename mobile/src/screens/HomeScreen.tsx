@@ -59,7 +59,18 @@ export function HomeScreen() {
           <Text style={styles.storesText}>{t.storesTracked(liveStores.length)}</Text>
         </View>
         <View style={styles.searchWrap}>
-          <SearchBar placeholder={t.searchPlaceholder} onPress={() => openSearch()} />
+          <View style={styles.searchFlex}>
+            <SearchBar placeholder={t.searchPlaceholder} onPress={() => openSearch()} />
+          </View>
+          <Pressable
+            style={styles.scanButton}
+            onPress={() => navigation.navigate('Scan')}
+            accessibilityRole="button"
+            accessibilityLabel={t.scan.title}
+          >
+            <Text style={styles.scanIcon}>▥</Text>
+            <Text style={styles.scanText}>{t.scan.button}</Text>
+          </Pressable>
         </View>
       </View>
 
@@ -142,7 +153,12 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 14, color: '#CFEFE0', marginTop: 4 },
   storeRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: spacing.md },
   storesText: { color: '#E8F7F0', fontSize: 12, marginLeft: 4, fontWeight: '600' },
-  searchWrap: { marginTop: spacing.lg },
+  searchWrap: { marginTop: spacing.lg, flexDirection: 'row', alignItems: 'stretch', gap: spacing.sm },
+  searchFlex: { flex: 1 },
+  scanButton: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: spacing.md, alignItems: 'center',
+    justifyContent: 'center' },
+  scanIcon: { fontSize: 18, color: colors.primary, fontWeight: '900' },
+  scanText: { fontSize: 11, color: colors.primary, fontWeight: '700' },
   section: { marginTop: spacing.xl },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   sectionTitle: { fontSize: 17, fontWeight: '700', color: colors.text, marginBottom: spacing.sm },

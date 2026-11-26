@@ -157,7 +157,7 @@ Release builds should talk to the backend over HTTPS (Android blocks clear-text 
 Screens: Shopping list (multi-product input with suggestions, type choices, size chips, quantities, saved lists),
 Results (Cheapest / Mid-range / Premium tabs), Preferences, Home (search, categories, recent searches, price drops, shopping list), Search, Product details
 (cheapest price, store comparison with "updated X ago", add to list, price-history chart), Price comparison,
-Shopping list, Basket optimization, Profile (language հայերեն/English, server, data sources).
+Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Profile (language հայերեն/English, server, data sources).
 
 ## 8. Run tests
 
@@ -210,6 +210,7 @@ kat, dzu 10, 2 hac, karag, coca cola 1.5l, kartofil 2kg, panir
 | GET | `/api/products/search?q=&storeId=` | search every store (hy/en/ru, units normalized); each item has one `offers[]` entry per store listing; `stores[]` gives per-store match counts and catalog status |
 | GET | `/api/products?categoryId=` | browse |
 | GET | `/api/products/{id}` | details |
+| GET | `/api/products/by-barcode/{code}` | product by scanned EAN-13/EAN-8/UPC-A barcode (UPC-A ≡ EAN-13 with leading 0); 404 if no barcode-publishing store lists it |
 | GET | `/api/products/{id}/offers` | store-by-store comparison: one row per supermarket with its own listing/price, or `NOT_FOUND` (only after a complete crawl), `NOT_YET_IMPORTED`, `CATALOG_UNAVAILABLE`, `NOT_INTEGRATED` |
 | GET | `/api/products/{id}/prices` | current price per store, cheapest, `capturedAt`, `ageHours`, `freshness` |
 | GET | `/api/products/{id}/history?days=90` | price observations per store |

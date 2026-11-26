@@ -15,4 +15,5 @@ export type RootStackParamList = {
   Basket: undefined;
   Results: undefined;
   Preferences: undefined;
+  Scan: undefined;
 };

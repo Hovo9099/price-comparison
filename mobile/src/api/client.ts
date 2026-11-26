@@ -54,6 +54,8 @@ export const api = {
   browseProducts: (categoryId: number | undefined, page = 0) =>
     request<Page<ProductSummary>>(`/api/products?${q({ categoryId, page, size: 20 })}`),
   product: (id: number) => request<ProductDetail>(`/api/products/${id}`),
+  productByBarcode: (code: string) =>
+    request<ProductDetail>(`/api/products/by-barcode/${encodeURIComponent(code)}`),
   prices: (id: number) => request<PriceComparison>(`/api/products/${id}/prices`),
   offers: (id: number) => request<ProductOffers>(`/api/products/${id}/offers`),
   history: (id: number, days = 90) => request<PriceHistory>(`/api/products/${id}/history?days=${days}`),

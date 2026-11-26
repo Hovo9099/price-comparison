@@ -152,6 +152,17 @@ export const en: Strings = {
     CATALOG_UNAVAILABLE: 'Catalog unavailable',
     NOT_INTEGRATED: 'Not integrated',
   },
+  scan: {
+    title: 'Scan barcode',
+    button: 'Scan',
+    hint: 'Point the camera at the product barcode',
+    needPermission: 'Camera access is needed to scan barcodes',
+    grant: 'Allow',
+    looking: 'Looking up…',
+    notFound: (code: string) => `No product with barcode ${code}. Not every store publishes barcodes.`,
+    searchByName: 'Search by name',
+    again: 'Scan again',
+  },
   catalogState: {
     COMPLETE: 'complete',
     PARTIAL: 'partial',
