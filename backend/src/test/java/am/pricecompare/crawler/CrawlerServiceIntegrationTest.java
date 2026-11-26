@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(CrawlerServiceIntegrationTest.FakeProviders.class)
 class CrawlerServiceIntegrationTest {
 
-    /** Replaces the real network providers for the "nor-zovq" and "supermarket-am" store codes in this test. */
+    /** Extra providers with test-only store codes (no network). */
     @TestConfiguration
     static class FakeProviders {
         @Bean

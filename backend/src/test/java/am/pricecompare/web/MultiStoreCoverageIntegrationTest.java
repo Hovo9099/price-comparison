@@ -63,12 +63,27 @@ class MultiStoreCoverageIntegrationTest {
         carrefour = storeRepo.findBySlug("carrefour").orElseThrow().getId();
         smam = storeRepo.findBySlug("supermarket-am").orElseThrow().getId();
         norZovq = storeRepo.findBySlug("nor-zovq").orElseThrow().getId();
+        // a store row without any crawler: the "not integrated" case
+        if (storeRepo.findBySlug("test-no-parser").isEmpty()) {
+            am.pricecompare.domain.Store noParser = new am.pricecompare.domain.Store();
+            noParser.setName("Test store without parser");
+            noParser.setSlug("test-no-parser");
+            noParser.setWebsiteUrl("https://test.invalid");
+            storeRepo.save(noParser);
+            catalogStatus.invalidate();
+        }
         now = Instant.now();
         // The same milk at four stores, each with its own id, URL and price
         ingestion.ingest(sas, null, product("SAS-77", "Կաթ «Թեստկաթ» 3.2% 1լ", "Milk \"Testkat\" 3.2% 1l", null, null, "640", now), false);
         ingestion.ingest(yc, null, product("YC-1001", "Կաթ «Թեստկաթ» 3.2% 1լ", "Milk \"Testkat\" 3.2% 1l", null, null, "620", now), false);
         ingestion.ingest(carrefour, null, product("CF-milk-1l", "Կաթ «Թեստկաթ» 3.2% 1լ", null, null, null, "655", now), false);
         ingestion.ingest(smam, null, product("SM-5", "Կաթ «Թեստկաթ» 3.2% 1լ", null, null, null, "610", now), false);
+    }
+
+    /** The database is reset after each test, but the store-status cache lives in the shared Spring context. */
+    @org.junit.jupiter.api.AfterEach
+    void forgetCachedStores() {
+        catalogStatus.invalidate();
     }
 
     private JsonNode getJson(String url, Object... params) throws Exception {
@@ -103,7 +118,7 @@ class MultiStoreCoverageIntegrationTest {
         JsonNode offers = getJson("/api/products/" + canonical + "/offers");
         Map<String, JsonNode> rows = new HashMap<>();
         offers.path("stores").forEach(r -> rows.put(r.path("storeSlug").asText(), r));
-        assertThat(rows).containsOnlyKeys("sas", "yerevan-city", "carrefour", "supermarket-am", "nor-zovq", "parma");
+        assertThat(rows).containsOnlyKeys("sas", "yerevan-city", "carrefour", "supermarket-am", "nor-zovq", "parma", "test-no-parser");
         assertThat(offers.path("storesWithOffer").asInt()).isEqualTo(4);
         assertThat(rows.get("sas").path("offers").get(0).path("price").decimalValue()).isEqualByComparingTo("640");
         assertThat(rows.get("sas").path("offers").get(0).path("externalProductId").asText()).isEqualTo("SAS-77");
@@ -111,7 +126,8 @@ class MultiStoreCoverageIntegrationTest {
         assertThat(rows.get("carrefour").path("offers").get(0).path("price").decimalValue()).isEqualByComparingTo("655");
         assertThat(rows.get("supermarket-am").path("offers").get(0).path("price").decimalValue()).isEqualByComparingTo("610");
         assertThat(rows.get("supermarket-am").path("offers").get(0).path("externalUrl").asText()).endsWith("/SM-5");
-        assertThat(rows.get("nor-zovq").path("status").asText()).isEqualTo("NOT_INTEGRATED");
+        assertThat(rows.get("test-no-parser").path("status").asText()).isEqualTo("NOT_INTEGRATED");
+        assertThat(rows.get("nor-zovq").path("status").asText()).isEqualTo("NOT_YET_IMPORTED");
         assertThat(offers.path("cheapest").path("storeSlug").asText()).isEqualTo("supermarket-am");
 
         // A new SAS price never touches another store's price
@@ -138,8 +154,8 @@ class MultiStoreCoverageIntegrationTest {
             Map<String, JsonNode> stores = new HashMap<>();
             r.path("stores").forEach(s -> stores.put(s.path("storeSlug").asText(), s));
             assertThat(stores.get("carrefour").path("matches").asLong()).as(q).isEqualTo(1);
-            assertThat(stores.get("nor-zovq").path("catalogState").asText()).isEqualTo("NOT_IMPLEMENTED");
-            assertThat(stores.get("nor-zovq").path("matches").asLong()).isZero();
+            assertThat(stores.get("test-no-parser").path("catalogState").asText()).isEqualTo("NOT_IMPLEMENTED");
+            assertThat(stores.get("test-no-parser").path("matches").asLong()).isZero();
         }
         // Restricting to one store
         JsonNode onlyCarrefour = getJson("/api/products/search", "q", "testkat", "storeId", carrefour);
@@ -177,7 +193,8 @@ class MultiStoreCoverageIntegrationTest {
         Map<String, String> status = rowStatuses(canonical);
         assertThat(status.get("sas")).isEqualTo("AVAILABLE");
         assertThat(status.get("carrefour")).isEqualTo("NOT_YET_IMPORTED");
-        assertThat(status.get("nor-zovq")).isEqualTo("NOT_INTEGRATED");
+        assertThat(status.get("test-no-parser")).isEqualTo("NOT_INTEGRATED");
+        assertThat(status.get("nor-zovq")).isEqualTo("NOT_YET_IMPORTED");
 
         // Carrefour's whole catalog was crawled -> "not found"
         completeCrawl(carrefour);
@@ -198,8 +215,10 @@ class MultiStoreCoverageIntegrationTest {
         stores.forEach(s -> bySlug.put(s.path("slug").asText(), s));
         assertThat(bySlug.get("carrefour").path("catalogState").asText()).isEqualTo("COMPLETE");
         assertThat(bySlug.get("yerevan-city").path("catalogState").asText()).isEqualTo("PARTIAL");
-        assertThat(bySlug.get("nor-zovq").path("integrated").asBoolean()).isFalse();
-        assertThat(bySlug.get("nor-zovq").path("catalogState").asText()).isEqualTo("NOT_IMPLEMENTED");
+        assertThat(bySlug.get("test-no-parser").path("integrated").asBoolean()).isFalse();
+        assertThat(bySlug.get("test-no-parser").path("catalogState").asText()).isEqualTo("NOT_IMPLEMENTED");
+        assertThat(bySlug.get("nor-zovq").path("integrated").asBoolean()).isTrue();
+        assertThat(bySlug.get("nor-zovq").path("catalogState").asText()).isEqualTo("NOT_IMPORTED");
     }
 
     @Test

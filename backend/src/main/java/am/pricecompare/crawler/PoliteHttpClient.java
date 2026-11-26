@@ -130,7 +130,8 @@ public class PoliteHttpClient {
     private static String readBody(HttpResponse<InputStream> resp) throws IOException {
         try (InputStream raw = resp.body()) {
             byte[] bytes = raw.readAllBytes();
-            boolean gzip = resp.headers().firstValue("Content-Encoding").map(v -> v.toLowerCase().contains("gzip")).orElse(false);
+            // Content-Encoding: gzip, or a gzip file served as-is (e.g. sitemap.xml.gz): detect by the magic bytes
+            boolean gzip = bytes.length > 2 && (bytes[0] & 0xff) == 0x1f && (bytes[1] & 0xff) == 0x8b;
             if (gzip) {
                 try (InputStream in = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
                     bytes = in.readAllBytes();

@@ -79,6 +79,10 @@ crawler:
       fetch-english-names: false
     parma:
       enabled: true
+    nor-zovq:
+      enabled: true
+      # listing pages give prices; product pages (GTIN-13 barcode) only for products never enriched
+      detail-pages: ${CRAWLER_ZOVQ_DETAIL_PAGES:MISSING}
 
 springdoc:
   api-docs:

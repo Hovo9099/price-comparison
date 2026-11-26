@@ -116,9 +116,8 @@ public class AdminController {
                 candidateRepo.countByStatus(MatchStatus.PENDING), storeProductRepo.countByCanonicalProductIsNull());
     }
 
-    /** Providers that need a network probe (Nor Zovq) are only probed by explicit crawl runs. */
     private static boolean providerAvailableCached(SupermarketProvider p) {
-        return !"nor-zovq".equals(p.getStoreCode()) && p.isAvailable();
+        return p.isAvailable();
     }
 
     @PostMapping("/crawlers/{store}/run")
@@ -129,7 +128,6 @@ public class AdminController {
                 ? storeRepo.findById(Long.parseLong(store)).map(Store::getSlug)
                 .orElseThrow(() -> new am.pricecompare.web.NotFoundException("Store " + store + " not found"))
                 : store;
-        // A provider without a parser (Nor Zovq) only re-probes the site and records an UNAVAILABLE run with the reason.
         long runId = crawlerService.startAsync(slug, maxProducts);
         catalogStatus.invalidate();
         return new StartCrawlResponse(runId, slug);

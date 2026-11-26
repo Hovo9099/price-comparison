@@ -25,7 +25,8 @@ crawl logs per-item errors to `crawl_errors` so breakage is visible in the admin
 | SAS Supermarket (sas.am) | **Integrated** | HTML: menu tree → leaf sections → `?LIMIT=60&offset=N` → product pages | see import report | no | yes (product page) | yes ("Ապրանքի կոդը") |
 | Yerevan City (yerevan-city.am) | **Integrated** | Public JSON API used by the storefront | see import report | **yes** | yes | no (internal id) |
 | Carrefour Armenia (carrefour.am) | **Integrated** | Sitemap → product pages (schema.org microdata) | 10,475 URLs in sitemap | no | yes | yes ("ID") |
-| Nor Zovq (norzovq.am) | Unavailable | — site returns Cloudflare 525 | — | — | — | — |
+| Nor Zovq (zovq.am, formerly norzovq.am) | **Integrated** (2026-11-26) | Shopware: sitemap → leaf categories → `?p=N` listings → product pages for new products | ~5.9k product URLs in sitemap (2026-11-26) | **yes** (GTIN-13) | no (producer only) | yes (`ЦБ-…`) |
+| Parma (parma.am) | **Integrated** | HTML: menu → leaf categories → `&page=N&per-page=60` | ~170 categories | no | no (in name) | yes (product code) |
 | Supermarket.am | **Integrated** | HTML: menu → level-2 categories → `?TOVGRUPCODE=…&PAGE_ELEMENT_COUNT=100&PAGEN_1=N` | 99 crawl units | no | no | no (internal id) |
 
 ---
@@ -109,12 +110,41 @@ entries are delisted products that return 404 (skipped, not counted as errors).
 English names are available at the same slug under `/en/` (disabled by default: doubles requests;
 `crawler.providers.carrefour.fetch-english-names=true` enables it). Barcodes are not published.
 
-## Nor Zovq — https://norzovq.am
+## Nor Zovq — https://zovq.am (formerly norzovq.am)
 
-Every request (with or without `www`) returned **HTTP 525** (Cloudflare: SSL handshake with origin failed) on
-2026-10-08. There is no public catalog to read. `NorZovqProvider.isAvailable()` probes the site each time a crawl
-is requested and reports the reason; once the site is back, a parser can be added. Until then prices can only be
-added through the CSV fallback.
+Checked 2026-11-26. `norzovq.am` (HTTP 525 on 2026-10-08) now answers `301 → https://zovq.am/`, a public
+**Shopware 6** storefront. `robots.txt` contains only Cloudflare's content-signal preamble: no `Disallow` rules and no
+signal set, so nothing is restricted.
+
+- **Categories**: `/sitemap.xml` is an index pointing to a gzip-compressed sitemap (served without
+  `Content-Encoding`; `PoliteHttpClient` detects gzip by its magic bytes). Category URLs end with `/`; only leaf
+  categories are crawled (~266). Skipped first segments: `manufacturer` (producer pages), `Datark-1` ("Empty",
+  an internal placeholder tree), `Akcia-Ak` (empty promo tree) — option `skip-sections`.
+- **Listings**: `<category>/?p=N`, 24 `.product-box` cards per page: `a.product-name` (title, URL ending with the
+  product number, e.g. `/Kath-Ani-3.2-1l/00-00018964` – used as external id), `.product-price .price-unit-main`
+  (`1 540 ֏`), `.list-price-price` when discounted (standard Shopware markup; none seen on 2026-11-26),
+  `data-product-information` (Shopware id). Last page: `input#p-last[value]`. No images in listings or product pages.
+- **Sold by weight**: names with a bare `կգ` ("Սոխ կգ") are priced per kg; `1կգ` / `2 կգ` is a pack size.
+- **Product pages** (only for products never enriched, `detail-pages: MISSING`): schema.org microdata —
+  `h1.product-detail-name`, `meta[itemprop=price]`, `priceCurrency`, **`meta[itemprop=gtin13]`** (barcode → exact
+  matching with Yerevan City), `[itemprop=sku]` (Cyrillic `ЦБ-…`), breadcrumb. `brand > meta[name]` holds the
+  producer's legal name (e.g. "… ՓԲԸ"), kept in raw data only — it is not a brand and is never used for matching.
+- Pages are ~1 MB each: ~270 listing pages per crawl, plus ~5.9k product pages on the first run.
+
+## Parma — https://parma.am
+
+`robots.txt` allows everything. Public server-rendered (Yii2) catalog: the menu lists ~170 categories; each leaf is
+read with `/hy/product/category?slug=<slug>&page=N&per-page=60` until the last page of its pagination. Cards carry
+name, price (per kg for products sold by weight), old price and promotion period, image and the store's product code.
+Brand/country are only on product pages and are not fetched (names carry the brand in «»). See `ParmaParser`.
+
+## Other candidates checked (2026-11-26)
+
+| Site | Result |
+|---|---|
+| gloria.am | WordPress company site, no product catalog or prices |
+| buy.am | delivery marketplace reselling other supermarkets' products (URLs like `/products/parma-supermarket/…`); not a store's own price, and it would duplicate Parma — not integrated |
+| evrika.am | no response (connection failed) |
 
 ## Supermarket.am — https://supermarket.am
 

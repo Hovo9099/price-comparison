@@ -20,7 +20,8 @@ price-comparison/
 | SAS Supermarket | integrated | public HTML catalog (menu → leaf sections → `?LIMIT=60&offset=N` → product pages) |
 | Yerevan City | integrated | public JSON API used by its storefront (includes **barcodes**) |
 | Carrefour Armenia | integrated | sitemap → product pages (schema.org microdata) |
-| Nor Zovq | unavailable | site returns Cloudflare 525; CSV import only |
+| Nor Zovq | integrated | norzovq.am now redirects to zovq.am (Shopware): sitemap → leaf categories → `?p=N` listings; product pages for **barcodes** (new products only) |
+| Parma | integrated | public HTML catalog (menu → ~170 categories → `&page=N&per-page=60`) |
 | Supermarket.am | integrated | public HTML catalog (menu → level-2 categories → 100-item pages) |
 
 Details, selectors, endpoints and robots.txt rules: [docs/data-sources.md](docs/data-sources.md).
@@ -69,7 +70,7 @@ java -jar target/price-comparison-backend.jar --spring.main.web-application-type
 
 Migrations live in `backend/src/main/resources/db/migration` (`V1` schema, `V2` real stores + categories —
 no products or prices, `V3` crawl heartbeat, `V4` activates Supermarket.am, `V5` smart shopping list, `V6` catalog
-coverage, `V7` Parma, `V8` price watches, `V9` price anomalies, `V10` manual store branches).
+coverage, `V7` Parma, `V8` price watches, `V9` price anomalies, `V10` manual store branches, `V11` Nor Zovq → zovq.am).
 
 ## 4. Start the backend
 
@@ -102,7 +103,7 @@ The database starts empty: prices only come from crawlers (or CSV of real observ
 cd backend
 java -jar target/price-comparison-backend.jar --spring.main.web-application-type=none \
      --crawler.run=sas --crawler.max-products=100
-# other store codes: yerevan-city, carrefour, supermarket-am
+# other store codes: yerevan-city, carrefour, supermarket-am, parma, nor-zovq
 ```
 
 **Full catalog import** (`max-products=0` = unlimited; all available stores in parallel, each host rate-limited):
@@ -114,7 +115,7 @@ java -jar target/price-comparison-backend.jar --spring.main.web-application-type
 
 Expected duration on first import: SAS ≈ 15 min for all listings (prices) + several hours of product pages
 (SKU/brand, only for products never enriched); Yerevan City ≈ 2–3 h (one detail call per product for barcode and
-English name); Carrefour ≈ 3 h (10k product pages). Later runs only refresh listings and enrich new products.
+English name); Carrefour ≈ 3 h (10k product pages); Nor Zovq ≈ 5 min for ~270 listing pages + ≈ 70 min of product pages on the first run (~5.9k products, barcodes). Later runs only refresh listings and enrich new products.
 
 The same can be done from the admin UI (Crawlers → Run / Full import) or the API:
 
@@ -249,8 +250,7 @@ run (`POST /api/admin/crawlers/{slugOrId}/run`) / cancel crawlers, crawl history
 
 **Catalog completeness**: a store's catalog is COMPLETE only after an unlimited crawl finished without being
 cancelled. Only then does a missing product mean "not sold here"; otherwise the app says the catalog is not
-(fully) imported or not integrated. Nor Zovq has no public catalog (Cloudflare 525) and is reported as not
-integrated; the dashboard's "Check site" re-probes it.
+(fully) imported or not integrated. A store row without a crawler is reported as not integrated.
 
 **Price watches**: the app follows products for an anonymous install (random UUID kept on the phone, sent as
 `X-Device-Id`). After every crawl that changed prices, each watch is compared with the cheapest non-outdated price:
