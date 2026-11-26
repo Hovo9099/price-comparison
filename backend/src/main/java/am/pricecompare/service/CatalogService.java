@@ -83,6 +83,39 @@ public class CatalogService {
         return toDetail(getProduct(id));
     }
 
+    /**
+     * Product by a scanned barcode: canonical barcode first, then any matched store listing with that barcode.
+     * UPC-A (12 digits) and its EAN-13 form (leading 0) are treated as the same code.
+     */
+    public ProductDetailDto byBarcode(String rawCode) {
+        String code = rawCode == null ? "" : rawCode.replaceAll("\\s", "");
+        if (!code.matches("\\d{6,14}")) {
+            throw new IllegalArgumentException("Barcode must be 6-14 digits");
+        }
+        for (String candidate : barcodeVariants(code)) {
+            CanonicalProduct c = canonicalRepo.findByBarcodeAndActiveTrue(candidate).stream().findFirst()
+                    .or(() -> storeProductRepo.findByBarcodeAndCanonicalProductIsNotNull(candidate).stream()
+                            .map(StoreProduct::getCanonicalProduct)
+                            .filter(CanonicalProduct::isActive)
+                            .findFirst())
+                    .orElse(null);
+            if (c != null) {
+                return toDetail(c);
+            }
+        }
+        throw new NotFoundException("No product with barcode " + code);
+    }
+
+    static List<String> barcodeVariants(String code) {
+        if (code.length() == 12) {
+            return List.of(code, "0" + code);
+        }
+        if (code.length() == 13 && code.startsWith("0")) {
+            return List.of(code, code.substring(1));
+        }
+        return List.of(code);
+    }
+
     ProductDetailDto toDetail(CanonicalProduct c) {
         Category cat = c.getCategory();
         List<String> aliases = aliasRepo.findByCanonicalProductId(c.getId()).stream().map(a -> a.getAlias()).distinct().toList();

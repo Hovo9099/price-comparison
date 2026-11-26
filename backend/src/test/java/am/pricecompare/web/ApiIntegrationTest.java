@@ -126,6 +126,18 @@ class ApiIntegrationTest {
     }
 
     @Test
+    void barcodeLookupFindsProductInEanAndUpcForm() throws Exception {
+        ingestion.ingest(yc, null, product("Y9", "Մածուն «Թեստմածուն» 500գ", "Matsun \"Testmatsun\" 500g", null,
+                "0999999000017", "350", Instant.now()), false);
+        JsonNode ean = getJson("/api/products/by-barcode/0999999000017");
+        assertThat(ean.path("nameEn").asText()).contains("Testmatsun");
+        JsonNode upc = getJson("/api/products/by-barcode/999999000017");
+        assertThat(upc.path("id").asLong()).isEqualTo(ean.path("id").asLong());
+        mvc.perform(get("/api/products/by-barcode/4000000000000")).andExpect(status().isNotFound());
+        mvc.perform(get("/api/products/by-barcode/abc")).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void historyEndpointReturnsSeriesPerStore() throws Exception {
         long id = productId("testcola");
         JsonNode r = getJson("/api/products/" + id + "/history?days=30");

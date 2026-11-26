@@ -71,6 +71,13 @@ public class ProductController {
         return catalogService.priceDrops(days, limit);
     }
 
+    @GetMapping("/by-barcode/{code}")
+    @Operation(summary = "Product by scanned barcode (EAN-13 / EAN-8 / UPC-A)",
+            description = "404 when no store that publishes barcodes lists the product. UPC-A and its EAN-13 form match each other.")
+    public ProductDetailDto byBarcode(@PathVariable @Size(max = 20) String code) {
+        return catalogService.byBarcode(code);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Product details")
     public ProductDetailDto detail(@PathVariable long id) {
