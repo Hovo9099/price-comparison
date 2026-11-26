@@ -210,10 +210,10 @@ public class CatalogService {
                     withOffer++;
                 } else if (!best.price().isAvailable() || !best.storeProduct().isActive()) {
                     status = ProductOffersDto.RowStatus.OUT_OF_STOCK;
-                    message = best.storeProduct().isActive() ? "The store marks it out of stock" : "No longer listed in the store's catalog";
+                    message = best.storeProduct().isActive() ? "Խանութում առկա չէ" : "Այլևս չկա խանութի կատալոգում";
                 } else {
                     status = ProductOffersDto.RowStatus.OUTDATED;
-                    message = "Price is too old to compare";
+                    message = "Գինը չափազանց հին է համեմատելու համար";
                 }
                 rows.add(new ProductOffersDto.StoreRow(store.getId(), store.getName(), store.getSlug(), status, message,
                         sorted.stream().map(OfferService::toOfferDto).toList()));
@@ -222,7 +222,7 @@ public class CatalogService {
             switch (sc.state()) {
                 case COMPLETE -> {
                     status = ProductOffersDto.RowStatus.NOT_FOUND;
-                    message = "Not found in the store's catalog (last full crawl " + sc.lastCompleteCrawl() + ")";
+                    message = "Չի գտնվել խանութի կատալոգում (վերջին ամբողջական ստուգում՝ " + java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(java.time.ZoneId.of("Asia/Yerevan")).format(sc.lastCompleteCrawl()) + ")";
                 }
                 case PARTIAL, NOT_IMPORTED -> {
                     status = ProductOffersDto.RowStatus.NOT_YET_IMPORTED;

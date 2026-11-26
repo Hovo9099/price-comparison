@@ -7,16 +7,16 @@ export function SettingsPage() {
   const [saved, setSaved] = useState(false);
   return (
     <>
-      <h1>Settings</h1>
-      <Card title="Admin token">
+      <h1>Կարգավորումներ</h1>
+      <Card title="Ադմինի թոքեն">
         <p className="muted">
-          Sent as <code>X-Admin-Token</code>. Must equal the backend's <code>ADMIN_TOKEN</code>. When the backend runs without
-          ADMIN_TOKEN, admin endpoints accept requests from localhost only and no token is needed.
+          Ուղարկվում է <code>X-Admin-Token</code> վերնագրով և պետք է համընկնի backend-ի <code>ADMIN_TOKEN</code>-ի հետ։ Եթե
+          backend-ը աշխատում է առանց ADMIN_TOKEN-ի, ադմինի հարցումներն ընդունվում են միայն localhost-ից, և թոքեն պետք չէ։
         </p>
         <div className="toolbar">
-          <input type="password" value={token} onChange={(e) => { setTok(e.target.value); setSaved(false); }} placeholder="Admin token" />
-          <button className="primary" onClick={() => { setToken(token); setSaved(true); }}>Save</button>
-          {saved && <span className="ok">Saved</span>}
+          <input type="password" value={token} onChange={(e) => { setTok(e.target.value); setSaved(false); }} placeholder="Ադմինի թոքեն" />
+          <button className="primary" onClick={() => { setToken(token); setSaved(true); }}>Պահպանել</button>
+          {saved && <span className="ok">Պահպանված է</span>}
         </div>
       </Card>
     </>

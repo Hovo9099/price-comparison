@@ -48,7 +48,7 @@ const option = (total: number, slug: string, name: string) => ({
       capturedAt: now, freshness: 'FRESH' as const, pricePercentile: 50, comparableProducts: 4, medianPricePerUnit: 700, reasonCode: 'MID_RANGE' as const, reason: '' }] }],
 });
 const comparison: Comparison = {
-  comparisonId: 1, shoppingListId: 3, calculatedAt: now, warnings: ['Delivery fees and travel costs are not included.'],
+  comparisonId: 1, shoppingListId: 3, calculatedAt: now, warnings: ['Առաքման վճարները և ճանապարհի ծախսերը ներառված չեն։'],
   items: [
     { itemId: 1, label: 'Կաթ 1 լ', conceptCode: 'milk', productId: null, quantity: 1, quantityUnit: 'pcs', sizeValue: 1000, sizeUnit: 'ml', status: 'OK', comparableProducts: 4, note: null, choices: [] },
     { itemId: 2, label: 'Պանիր', conceptCode: 'cheese', productId: null, quantity: 1, quantityUnit: 'pcs', sizeValue: null, sizeUnit: null, status: 'NEEDS_CHOICE', comparableProducts: 0, note: null, choices: [] },
@@ -114,7 +114,7 @@ test('results show three strategies with totals, reasons and excluded items', as
   expect(await screen.findByText('TEST Կաթ Carrefour')).toBeTruthy();
   expect(screen.getAllByText('1 200 ֏').length).toBeGreaterThan(0);
   expect(screen.getByText(/Պանիր — Ընտրեք տեսակը/)).toBeTruthy();
-  expect(screen.getByText(/Delivery fees and travel costs are not included/)).toBeTruthy();
+  expect(screen.getByText(/Առաքման վճարները և ճանապարհի ծախսերը ներառված չեն/)).toBeTruthy();
 });
 
 test('shares the list with a code and joins another list by code', async () => {

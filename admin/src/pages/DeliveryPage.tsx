@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { adminApi, type StoreDelivery } from '../api';
+import { adminApi, fmtDay, type StoreDelivery } from '../api';
 import { Card, ErrorBox } from '../components';
 
 const FIELDS = [
-  ['fee', 'Delivery fee'],
-  ['freeFrom', 'Free delivery from'],
-  ['minOrder', 'Minimum order'],
-  ['smallOrderBelow', 'Small order below'],
-  ['smallOrderFee', 'Small order fee'],
+  ['fee', 'Առաքման վճար'],
+  ['freeFrom', 'Անվճար առաքում՝ սկսած'],
+  ['minOrder', 'Նվազագույն պատվեր'],
+  ['smallOrderBelow', 'Փոքր պատվեր՝ մինչև'],
+  ['smallOrderFee', 'Փոքր պատվերի վճար'],
 ] as const;
 type Field = (typeof FIELDS)[number][0];
 
@@ -31,7 +31,7 @@ function StoreForm({ store }: { store: StoreDelivery }) {
   return (
     <Card title={store.name}>
       <div className="small muted">
-        {d?.checkedAt ? `Checked ${new Date(d.checkedAt).toLocaleDateString()}` : 'Unknown – never assumed in basket totals'}
+        {d?.checkedAt ? `Ստուգվել է ${fmtDay(d.checkedAt)}` : 'Անհայտ է․ զամբյուղի հաշվարկում երբեք չի ենթադրվում'}
         {' · '}<a href={store.websiteUrl} target="_blank" rel="noreferrer">{store.websiteUrl}</a>
       </div>
       <div className="delivery-grid">
@@ -43,13 +43,13 @@ function StoreForm({ store }: { store: StoreDelivery }) {
         ))}
       </div>
       <label className="block">
-        <span className="small">Source (page URL and what it says) – required when any amount is set</span>
+        <span className="small">Աղբյուր (էջի URL և ինչ է գրված այնտեղ)․ պարտադիր է, եթե որևէ գումար նշված է</span>
         <input value={source} onChange={(e) => setSource(e.target.value)} style={{ width: '100%' }} />
       </label>
       <ErrorBox error={save.error} />
       <div className="actions">
-        <button className="primary" disabled={save.isPending} onClick={() => save.mutate()}>Save</button>
-        {save.isSuccess && <span className="small muted">Saved</span>}
+        <button className="primary" disabled={save.isPending} onClick={() => save.mutate()}>Պահպանել</button>
+        {save.isSuccess && <span className="small muted">Պահպանված է</span>}
       </div>
     </Card>
   );
@@ -59,10 +59,10 @@ export function DeliveryPage() {
   const stores = useQuery({ queryKey: ['storeDelivery'], queryFn: adminApi.storeDelivery });
   return (
     <>
-      <h1>Delivery terms</h1>
+      <h1>Առաքման պայմաններ</h1>
       <p className="muted">
-        Enter only what the store publishes, with the page it came from. Empty = unknown: unknown fees are never assumed
-        and the app says so. "Small order" is a tier where orders below an amount pay a different fee.
+        Մուտքագրեք միայն այն, ինչ հրապարակում է խանութը, նշելով էջը։ Դատարկ = անհայտ․ անհայտ վճարները երբեք չեն ենթադրվում,
+        և հավելվածը դա նշում է։ «Փոքր պատվեր»՝ որոշակի գումարից պակաս պատվերների համար այլ վճար։
       </p>
       <ErrorBox error={stores.error} />
       {stores.data?.map((s) => <StoreForm key={s.id} store={s} />)}

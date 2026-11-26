@@ -58,6 +58,13 @@ export const hy = {
   retry: 'Կրկին փորձել',
   loading: 'Բեռնվում է…',
   serverUnreachable: 'Սերվերը հասանելի չէ։ Ստուգեք հասցեն Պրոֆիլ բաժնում։',
+  httpError: {
+    notFound: 'Չի գտնվել',
+    badRequest: 'Սխալ տվյալներ',
+    conflict: 'Գործողությունը հնարավոր չէ կատարել',
+    tooMany: 'Չափազանց շատ հարցումներ․ փորձեք մի փոքր ուշ',
+    server: 'Սերվերի սխալ․ փորձեք ավելի ուշ',
+  },
   freshness: { FRESH: 'Թարմ', RECENT: 'Վերջերս', STALE: 'Հնացած', OUTDATED: 'Հին տվյալ' },
   time: {
     justNow: 'հենց նոր',

@@ -51,24 +51,24 @@ public class CrawlAlerts {
 
     @EventListener
     public void onCrawlFinished(CrawlFinishedEvent e) {
-        String store = e.storeName() != null ? e.storeName() : "store " + e.storeId();
+        String store = e.storeName() != null ? e.storeName() : "խանութ " + e.storeId();
         if (e.status() == CrawlStatus.FAILED) {
-            alerts.alert("❌ Crawl " + e.runId() + " for " + store + " FAILED"
-                    + (e.message() != null ? ": " + abbreviate(e.message()) : "")
-                    + " (discovered " + e.discovered() + ", errors " + e.errors() + ")");
+            alerts.alert("❌ " + store + "․ քրոլինգ #" + e.runId() + "-ը ՁԱԽՈՂՎԵՑ"
+                    + (e.message() != null ? "՝ " + abbreviate(e.message()) : "")
+                    + " (գտնված՝ " + e.discovered() + ", սխալներ՝ " + e.errors() + ")");
             return;
         }
         if (e.discovered() > 0 && e.errors() > Math.max(50, e.discovered() / 20)) {
-            alerts.alert("⚠️ Crawl " + e.runId() + " for " + store + ": " + e.errors() + " errors for " + e.discovered()
-                    + " products – check the crawl errors in the admin");
+            alerts.alert("⚠️ " + store + "․ քրոլինգ #" + e.runId() + "՝ " + e.errors() + " սխալ " + e.discovered()
+                    + " ապրանքի համար․ ստուգեք սխալները ադմինում");
         }
         if (e.maxProducts() == 0 && e.message() == null) {
             List<CrawlRun> complete = runRepo.findCompleteCrawls(e.storeId(), PageRequest.of(0, 3));
             complete.stream().filter(r -> r.getId() != e.runId()).findFirst().ifPresent(prev -> {
                 if (prev.getProductsDiscovered() >= SHRINK_MIN_PREVIOUS
                         && e.discovered() < prev.getProductsDiscovered() * SHRINK_RATIO) {
-                    alerts.alert("⚠️ " + store + ": full crawl " + e.runId() + " found " + e.discovered() + " products, previous full crawl "
-                            + prev.getId() + " found " + prev.getProductsDiscovered() + " – the store website may have changed");
+                    alerts.alert("⚠️ " + store + "․ ամբողջական քրոլինգ #" + e.runId() + "-ը գտավ " + e.discovered() + " ապրանք, նախորդը (#"
+                            + prev.getId() + ")՝ " + prev.getProductsDiscovered() + "․ հնարավոր է՝ խանութի կայքը փոխվել է");
                 }
             });
         }
@@ -100,9 +100,9 @@ public class CrawlAlerts {
             Instant alerted = staleAlertedAt.get(store.getId());
             if (alerted == null || Duration.between(alerted, now).toHours() >= 24) {
                 staleAlertedAt.put(store.getId(), now);
-                alerts.alert("⏰ " + store.getName() + ": no successful crawl "
-                        + (last == null ? "yet" : "since " + last + " (" + Duration.between(last, now).toHours() + " h)")
-                        + " – prices are getting stale");
+                alerts.alert("⏰ " + store.getName() + "․ հաջող քրոլինգ "
+                        + (last == null ? "դեռ չի եղել" : "չի եղել " + Duration.between(last, now).toHours() + " ժամ (վերջինը՝ " + last + ")")
+                        + "․ գները հնանում են");
             }
         }
     }

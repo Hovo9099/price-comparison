@@ -26,26 +26,26 @@ export function StoreProductsPage() {
   });
   return (
     <>
-      <h1>Store products & mapping</h1>
+      <h1>Խանութների ապրանքներ և կապում</h1>
       <form className="toolbar" onSubmit={(e) => { e.preventDefault(); setPage(0); setQuery(q); }}>
         <select value={storeId ?? ''} onChange={(e) => { setPage(0); setStoreId(e.target.value ? Number(e.target.value) : undefined); }}>
-          <option value="">All stores</option>
+          <option value="">Բոլոր խանութները</option>
           {dash.data?.stores.map((s) => <option key={s.storeId} value={s.storeId}>{s.name}</option>)}
         </select>
-        <label className="checkbox"><input type="checkbox" checked={unmatched} onChange={(e) => { setPage(0); setUnmatched(e.target.checked); }} /> Unmatched only</label>
-        <input placeholder="Search name" value={q} onChange={(e) => setQ(e.target.value)} />
-        <button type="submit">Search</button>
+        <label className="checkbox"><input type="checkbox" checked={unmatched} onChange={(e) => { setPage(0); setUnmatched(e.target.checked); }} /> Միայն չկապվածները</label>
+        <input placeholder="Որոնել անունով" value={q} onChange={(e) => setQ(e.target.value)} />
+        <button type="submit">Որոնել</button>
       </form>
       <ErrorBox error={list.error ?? map.error} />
       {mapping && (
-        <Card title={`Map: ${mapping.name}`}>
+        <Card title={`Կապել՝ ${mapping.name}`}>
           <CanonicalPicker initialQuery={mapping.name.split(' ').slice(0, 3).join(' ')} onCancel={() => setMapping(null)}
             onPick={(canonicalId) => map.mutate({ id: mapping.id, canonicalId })} />
         </Card>
       )}
       <Card>
         <table>
-          <thead><tr><th>Store</th><th>External id / SKU</th><th>Name</th><th>Brand</th><th>Barcode</th><th>Price</th><th>Last seen</th><th>Canonical</th><th></th></tr></thead>
+          <thead><tr><th>Խանութ</th><th>Արտաքին id / SKU</th><th>Անուն</th><th>Բրենդ</th><th>Բարկոդ</th><th>Գին</th><th>Վերջին անգամ տեսնվել է</th><th>Ընդհանուր ապրանք</th><th></th></tr></thead>
           <tbody>
             {list.data?.items.map((sp) => (
               <tr key={sp.id} className={sp.active ? '' : 'inactive'}>
@@ -57,8 +57,8 @@ export function StoreProductsPage() {
                 <td className="small">{sp.barcode ?? '—'}</td>
                 <td>{fmtPrice(sp.currentPrice)}</td>
                 <td className="small">{fmtDate(sp.lastSeenAt)}</td>
-                <td className="small">{sp.canonicalProductId ? `#${sp.canonicalProductId}` : <span className="danger">none</span>}</td>
-                <td><button onClick={() => setMapping({ id: sp.id, name: sp.externalNameEn ?? sp.externalName })}>Map…</button></td>
+                <td className="small">{sp.canonicalProductId ? `#${sp.canonicalProductId}` : <span className="danger">չկա</span>}</td>
+                <td><button onClick={() => setMapping({ id: sp.id, name: sp.externalNameEn ?? sp.externalName })}>Կապել…</button></td>
               </tr>
             ))}
           </tbody>

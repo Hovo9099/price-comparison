@@ -231,12 +231,12 @@ public class SmartListService {
 
         List<String> warnings = new ArrayList<>();
         if (statuses.stream().anyMatch(s -> s.status() != ItemStatus.OK)) {
-            warnings.add("Some items are not included in the totals (see item statuses).");
+            warnings.add("Որոշ ապրանքներ ներառված չեն ընդհանուր գումարում (տե՛ս ապրանքների կարգավիճակները)։");
         }
         if (!includeDelivery) {
-            warnings.add("Delivery fees and travel costs are not included.");
+            warnings.add("Առաքման վճարները և ճանապարհի ծախսերը ներառված չեն։");
         } else if (stores.values().stream().anyMatch(s -> s.getDeliveryFee() == null)) {
-            warnings.add("Delivery fees are unknown for some stores and were not added; travel costs are never included.");
+            warnings.add("Որոշ խանութների առաքման վճարները հայտնի չեն և չեն ավելացվել․ ճանապարհի ծախսերը երբեք չեն ներառվում։");
         }
         ComparisonDto result = new ComparisonDto(null, listId, prefs, statuses, withDiff, warnings, now);
         return save(result);
@@ -387,7 +387,7 @@ public class SmartListService {
             StrategySelector.Selection sel = StrategySelector.select(strategy, prices);
             selections.put(e.getKey(), sel);
             if (strategy == Strategy.PREMIUM && sel.noPremiumAlternative() && !ctx.fixedProduct()) {
-                notes.add(ctx.label() + ": only one comparable product, no premium alternative");
+                notes.add(ctx.label() + "․ համեմատելի միայն մեկ ապրանք կա, պրեմիում այլընտրանք չկա");
             }
             // per store: the cheapest eligible offer
             Map<Long, OfferService.Offer> bestPerStore = new HashMap<>();
@@ -440,8 +440,8 @@ public class SmartListService {
             recommended = "MULTI_STORE";
             total = items.isEmpty() ? null : multi.total();
             if (multi.storeCount() > 1) {
-                notes.add("Buying at " + multi.storeCount() + " stores; travel time/costs are not included"
-                        + (includeDelivery && multi.stores().stream().anyMatch(st -> !st.deliveryFeeKnown()) ? " and some delivery fees are unknown" : ""));
+                notes.add("Գնումներ " + multi.storeCount() + " խանութում․ ճանապարհի ժամանակն ու ծախսերը ներառված չեն"
+                        + (includeDelivery && multi.stores().stream().anyMatch(st -> !st.deliveryFeeKnown()) ? ", և որոշ առաքման վճարներ հայտնի չեն" : ""));
             }
         }
         List<Long> missing = new ArrayList<>(r.unavailableItemIds());

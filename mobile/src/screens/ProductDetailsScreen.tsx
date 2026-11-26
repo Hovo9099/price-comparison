@@ -5,7 +5,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useHistory, useListMutations, useOffers } from '../api/hooks';
 import { FreshnessBadge } from '../components/FreshnessBadge';
 import { PriceHistoryChart } from '../components/PriceHistoryChart';
-import { ErrorView, Loading } from '../components/StateViews';
+import { ErrorView, Loading, errorText } from '../components/StateViews';
 import { StoreComparisonTable } from '../components/StoreComparisonTable';
 import { WatchButton } from '../components/WatchButton';
 import { colors, spacing } from '../components/theme';
@@ -72,7 +72,7 @@ export function ProductDetailsScreen() {
       >
         <Text style={styles.addText}>{added ? `✓ ${t.addedToList}` : `+ ${t.addToList}`}</Text>
       </Pressable>
-      {add.isError ? <Text style={styles.unavailable}>{String((add.error as Error).message)}</Text> : null}
+      {add.isError ? <Text style={styles.unavailable}>{errorText(t, add.error)}</Text> : null}
       <WatchButton productId={product.id} />
 
       <View style={styles.section}>

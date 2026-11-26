@@ -121,21 +121,21 @@ public class CatalogStatusService {
             if (complete != null) {
                 state = CatalogState.COMPLETE;
                 reason = last != null && !last.getId().equals(complete.getId()) && (last.getStatus() == CrawlStatus.FAILED || last.getStatus() == CrawlStatus.UNAVAILABLE)
-                        ? "Latest crawl failed (" + last.getErrorMessage() + "); listings are from the last complete crawl"
+                        ? "Վերջին ստուգումը ձախողվել է (" + last.getErrorMessage() + ")․ տվյալները վերջին ամբողջական ստուգումից են"
                         : null;
             } else if (c.listings() > 0) {
                 state = CatalogState.PARTIAL;
-                reason = "Only part of the catalog has been imported; a missing product may still be sold here";
+                reason = "Կատալոգի միայն մի մասն է ներմուծված․ բացակայող ապրանքը կարող է վաճառվել այստեղ";
             } else if (!implemented) {
                 state = CatalogState.NOT_IMPLEMENTED;
-                reason = p == null ? "No crawler exists for this store"
-                        : p.unavailableReason() != null ? p.unavailableReason() : "No catalog parser for this store";
+                reason = p == null ? "Այս խանութի համար քրոլեր չկա"
+                        : p.unavailableReason() != null ? p.unavailableReason() : "Այս խանութի կատալոգը միացված չէ";
             } else if (last != null && (last.getStatus() == CrawlStatus.FAILED || last.getStatus() == CrawlStatus.UNAVAILABLE)) {
                 state = CatalogState.UNAVAILABLE;
-                reason = last.getErrorMessage() != null ? last.getErrorMessage() : "The last crawl failed";
+                reason = last.getErrorMessage() != null ? last.getErrorMessage() : "Վերջին ստուգումը ձախողվել է";
             } else {
                 state = CatalogState.NOT_IMPORTED;
-                reason = last != null && last.getStatus() == CrawlStatus.RUNNING ? "First import is running" : "Catalog not imported yet";
+                reason = last != null && last.getStatus() == CrawlStatus.RUNNING ? "Առաջին ներմուծումն ընթացքում է" : "Կատալոգը դեռ ներմուծված չէ";
             }
             out.add(new StoreCatalog(s, implemented, state, reason, c.listings(), c.active(), c.priced(),
                     complete == null ? null : complete.getFinishedAt(), c.lastPrice(), last, complete));

@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react';
 import { ApiError, type CrawlStatus } from './api';
+import { statusLabel } from './labels';
 
 export function StatusBadge({ status }: { status: CrawlStatus | string }) {
-  return <span className={`badge badge-${status.toLowerCase()}`}>{status}</span>;
+  return <span className={`badge badge-${status.toLowerCase()}`}>{statusLabel(status)}</span>;
 }
 
 export function ErrorBox({ error }: { error: unknown }) {
   if (!error) return null;
   const msg = error instanceof ApiError && error.status === 401
-    ? 'Unauthorized: set the admin token in Settings (or run the backend locally without ADMIN_TOKEN).'
+    ? 'Մուտքը մերժված է․ մուտքագրեք ադմինի թոքենը «Կարգավորումներ» էջում (կամ գործարկեք backend-ը տեղում առանց ADMIN_TOKEN-ի)։'
     : error instanceof Error ? error.message : String(error);
   return <div className="error">{msg}</div>;
 }
@@ -17,9 +18,9 @@ export function Pager({ page, size, total, onPage }: { page: number; size: numbe
   const pages = Math.max(1, Math.ceil(total / size));
   return (
     <div className="pager">
-      <button disabled={page === 0} onClick={() => onPage(page - 1)}>‹ Prev</button>
-      <span>Page {page + 1} / {pages} · {total} total</span>
-      <button disabled={page + 1 >= pages} onClick={() => onPage(page + 1)}>Next ›</button>
+      <button disabled={page === 0} onClick={() => onPage(page - 1)}>‹ Նախորդ</button>
+      <span>Էջ {page + 1} / {pages} · ընդամենը {total}</span>
+      <button disabled={page + 1 >= pages} onClick={() => onPage(page + 1)}>Հաջորդ ›</button>
     </div>
   );
 }

@@ -29,38 +29,38 @@ function EditProduct({ id, onClose }: { id: number; onClose: () => void }) {
     </label>
   );
   return (
-    <Card title={`Canonical product #${id}`} actions={<button onClick={onClose}>Close</button>}>
+    <Card title={`Ընդհանուր ապրանք #${id}`} actions={<button onClick={onClose}>Փակել</button>}>
       <ErrorBox error={detail.error ?? save.error} />
       <div className="form-grid">
-        {field('name', 'Name (hy)')}
-        {field('nameEn', 'Name (en)')}
-        {field('brand', 'Brand')}
-        {field('barcode', 'Barcode')}
-        {field('sizeValue', 'Size value (ml / g / pcs)', 'number')}
+        {field('name', 'Անուն (հայ.)')}
+        {field('nameEn', 'Անուն (անգլ.)')}
+        {field('brand', 'Բրենդ')}
+        {field('barcode', 'Բարկոդ')}
+        {field('sizeValue', 'Չափ (մլ / գ / հատ)', 'number')}
         <label>
-          Size unit
+          Չափի միավոր
           <select value={form.sizeUnit ?? ''} onChange={(e) => setForm({ ...form, sizeUnit: e.target.value || null })}>
-            <option value="">—</option><option value="ml">ml</option><option value="g">g</option><option value="pcs">pcs</option>
+            <option value="">—</option><option value="ml">մլ</option><option value="g">գ</option><option value="pcs">հատ</option>
           </select>
         </label>
-        {field('variant', 'Variant (e.g. 3.2%)')}
+        {field('variant', 'Տարբերակ (օր.՝ 3.2%)')}
         <label>
-          Category
+          Կատեգորիա
           <select value={form.categoryId ?? ''} onChange={(e) => setForm({ ...form, categoryId: e.target.value ? Number(e.target.value) : null })}>
             <option value="">—</option>
             {categories.data?.map((c) => <option key={c.id} value={c.id}>{c.name} / {c.nameEn}</option>)}
           </select>
         </label>
-        {field('imageUrl', 'Image URL')}
+        {field('imageUrl', 'Նկարի URL')}
         <label className="checkbox">
-          <input type="checkbox" checked={form.active ?? true} onChange={(e) => setForm({ ...form, active: e.target.checked })} /> Active
+          <input type="checkbox" checked={form.active ?? true} onChange={(e) => setForm({ ...form, active: e.target.checked })} /> Ակտիվ
         </label>
       </div>
-      <button className="primary" disabled={save.isPending} onClick={() => save.mutate()}>Save</button>
-      {save.isSuccess && <span className="ok"> Saved</span>}
-      <h3>Store products</h3>
+      <button className="primary" disabled={save.isPending} onClick={() => save.mutate()}>Պահպանել</button>
+      {save.isSuccess && <span className="ok"> Պահպանված է</span>}
+      <h3>Խանութների ապրանքներ</h3>
       <table>
-        <thead><tr><th>Store</th><th>External name</th><th>Barcode</th><th>Price</th><th>Captured</th></tr></thead>
+        <thead><tr><th>Խանութ</th><th>Խանութի անվանում</th><th>Բարկոդ</th><th>Գին</th><th>Գրանցվել է</th></tr></thead>
         <tbody>
           {detail.data?.storeProducts.map((sp) => (
             <tr key={sp.id}>
@@ -86,27 +86,27 @@ export function ProductsPage() {
   const list = useQuery({ queryKey: ['canonicalList', query, page], queryFn: () => adminApi.canonical(query, page) });
   return (
     <>
-      <h1>Canonical products</h1>
+      <h1>Ընդհանուր ապրանքներ</h1>
       <form className="toolbar" onSubmit={(e) => { e.preventDefault(); setPage(0); setQuery(q); }}>
-        <input placeholder="Search name or barcode" value={q} onChange={(e) => setQ(e.target.value)} />
-        <button type="submit">Search</button>
+        <input placeholder="Որոնել անունով կամ բարկոդով" value={q} onChange={(e) => setQ(e.target.value)} />
+        <button type="submit">Որոնել</button>
       </form>
       <ErrorBox error={list.error} />
       {editing !== null && <EditProduct id={editing} onClose={() => setEditing(null)} />}
       <Card>
         <table>
-          <thead><tr><th>#</th><th>Name</th><th>Brand</th><th>Size</th><th>Barcode</th><th>Stores</th><th>Active</th><th></th></tr></thead>
+          <thead><tr><th>#</th><th>Անուն</th><th>Բրենդ</th><th>Չափ</th><th>Բարկոդ</th><th>Խանութներ</th><th>Ակտիվ</th><th></th></tr></thead>
           <tbody>
             {list.data?.items.map((p) => (
               <tr key={p.id}>
                 <td>{p.id}</td>
                 <td>{p.name}{p.nameEn && <div className="muted small">{p.nameEn}</div>}</td>
                 <td>{p.brand ?? '—'}</td>
-                <td>{p.soldByWeight ? 'per kg' : p.sizeValue ? `${p.sizeValue} ${p.sizeUnit}` : '—'}{p.variant ? ` · ${p.variant}` : ''}</td>
+                <td>{p.soldByWeight ? '1 կգ-ի գին' : p.sizeValue ? `${p.sizeValue} ${p.sizeUnit}` : '—'}{p.variant ? ` · ${p.variant}` : ''}</td>
                 <td>{p.barcode ?? '—'}</td>
                 <td>{p.storeProductCount}</td>
-                <td>{p.active ? 'yes' : 'no'}</td>
-                <td><button onClick={() => setEditing(p.id)}>Edit</button></td>
+                <td>{p.active ? 'այո' : 'ոչ'}</td>
+                <td><button onClick={() => setEditing(p.id)}>Խմբագրել</button></td>
               </tr>
             ))}
           </tbody>

@@ -26,11 +26,11 @@ export function LocationsPage() {
 
   return (
     <>
-      <h1>Store branches</h1>
+      <h1>Մասնաճյուղեր</h1>
       <p className="muted">
-        Used for "nearest store" in the app. Crawled branches (Yerevan City publishes its list) are kept up to date by the
-        crawler; for other stores add branches from the store's own address page. Coordinates: right-click the place in
-        a map and copy "lat, lon".
+        Օգտագործվում է հավելվածի «Մոտակա խանութներ» բաժնում։ Քրոլ արված մասնաճյուղերը (Yerevan City-ն հրապարակում է իր
+        ցուցակը) թարմացնում է քրոլերը, իսկ մյուս խանութների համար ավելացրեք մասնաճյուղերը խանութի հասցեների էջից։
+        Կոորդինատներ՝ քարտեզում աջ սեղմեք վայրի վրա և պատճենեք «lat, lon»-ը։
       </p>
       <div className="toolbar">
         <select value={current ?? ''} onChange={(e) => setStoreId(Number(e.target.value))}>
@@ -38,11 +38,11 @@ export function LocationsPage() {
         </select>
       </div>
       <ErrorBox error={stores.error ?? locations.error} />
-      <Card title="Add branch">
+      <Card title="Ավելացնել մասնաճյուղ">
         <div className="delivery-grid">
-          {(['name', 'address', 'latitude', 'longitude'] as const).map((k) => (
+          {([['name', 'Անվանում'], ['address', 'Հասցե'], ['latitude', 'Լայնություն'], ['longitude', 'Երկայնություն']] as const).map(([k, label]) => (
             <label key={k}>
-              <span className="small">{k}</span>
+              <span className="small">{label}</span>
               <input value={form[k]} onChange={(e) => setForm({ ...form, [k]: e.target.value })}
                 onPaste={k === 'latitude' ? (e) => {
                   const m = e.clipboardData.getData('text').match(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/);
@@ -52,23 +52,23 @@ export function LocationsPage() {
           ))}
         </div>
         <label className="block">
-          <span className="small">Source (store page listing this branch)</span>
+          <span className="small">Աղբյուր (խանութի էջը, որտեղ նշված է այս մասնաճյուղը)</span>
           <input value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })} />
         </label>
         <ErrorBox error={add.error} />
-        <button className="primary" disabled={add.isPending || current === null} onClick={() => add.mutate()}>Add</button>
+        <button className="primary" disabled={add.isPending || current === null} onClick={() => add.mutate()}>Ավելացնել</button>
       </Card>
-      <Card title={`Branches (${locations.data?.filter((l) => l.active).length ?? 0} active)`}>
+      <Card title={`Մասնաճյուղեր (${locations.data?.filter((l) => l.active).length ?? 0} ակտիվ)`}>
         <table>
-          <thead><tr><th>Name</th><th>Address</th><th>Coordinates</th><th>Origin</th><th /></tr></thead>
+          <thead><tr><th>Անվանում</th><th>Հասցե</th><th>Կոորդինատներ</th><th>Աղբյուր</th><th /></tr></thead>
           <tbody>
             {locations.data?.map((l) => (
               <tr key={l.id} className={l.active ? '' : 'muted'}>
                 <td>{l.name}</td>
                 <td>{l.address}</td>
                 <td className="small">{l.latitude != null ? `${l.latitude}, ${l.longitude}` : '—'}</td>
-                <td className="small">{l.manual ? <span title={l.source ?? ''}>manual</span> : 'crawler'}{!l.active && ' · inactive'}</td>
-                <td>{l.manual && l.active && <button className="danger-btn" onClick={() => remove.mutate(l.id)}>Remove</button>}</td>
+                <td className="small">{l.manual ? <span title={l.source ?? ''}>ձեռքով</span> : 'քրոլեր'}{!l.active && ' · ոչ ակտիվ'}</td>
+                <td>{l.manual && l.active && <button className="danger-btn" onClick={() => remove.mutate(l.id)}>Հեռացնել</button>}</td>
               </tr>
             ))}
           </tbody>

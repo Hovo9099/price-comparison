@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useWatchMutations, useWatches } from '../api/hooks';
 import { useI18n } from '../i18n';
+import { errorText } from './StateViews';
 import { registerForPush } from '../notifications';
 import { formatPrice } from '../utils/format';
 import { colors, radius, spacing } from './theme';
@@ -63,7 +64,7 @@ export function WatchButton({ productId }: { productId: number }) {
             <Text style={styles.secondaryText}>{t.watch.cancel}</Text>
           </Pressable>
         </View>
-        {save.isError ? <Text style={styles.error}>{String((save.error as Error).message)}</Text> : null}
+        {save.isError ? <Text style={styles.error}>{errorText(t, save.error)}</Text> : null}
       </View>
     );
   }

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { adminApi, fmtPrice, type MatchCandidate } from '../api';
 import { Card, ErrorBox, Pager } from '../components';
+import { statusLabel } from '../labels';
 import { CanonicalPicker } from './CanonicalPicker';
 
 function CandidateCard({ c }: { c: MatchCandidate }) {
@@ -23,32 +24,32 @@ function CandidateCard({ c }: { c: MatchCandidate }) {
     <div className="candidate">
       <div className="candidate-cols">
         <div>
-          <div className="label">Store product · {sp.storeName}</div>
+          <div className="label">Խանութի ապրանք · {sp.storeName}</div>
           <div className="name">{sp.externalName}</div>
           {sp.externalNameEn && <div className="muted">{sp.externalNameEn}</div>}
           <div className="small muted">
-            {sp.brand ?? 'no brand'} · {sp.packageSize ? `${sp.packageSize} ${sp.packageUnit}` : 'no size'} · {sp.barcode ?? 'no barcode'} · {fmtPrice(sp.currentPrice)}
+            {sp.brand ?? 'առանց բրենդի'} · {sp.packageSize ? `${sp.packageSize} ${sp.packageUnit}` : 'առանց չափի'} · {sp.barcode ?? 'առանց բարկոդի'} · {fmtPrice(sp.currentPrice)}
           </div>
-          {sp.externalUrl && <a className="small" href={sp.externalUrl} target="_blank" rel="noreferrer">open in store</a>}
+          {sp.externalUrl && <a className="small" href={sp.externalUrl} target="_blank" rel="noreferrer">բացել խանութում</a>}
         </div>
         <div className="confidence">
           <div className="pct">{Math.round(c.confidence * 100)}%</div>
           <div className="small muted">{c.reason}</div>
         </div>
         <div>
-          <div className="label">Candidate canonical #{cand.id}</div>
+          <div className="label">Թեկնածու ընդհանուր ապրանք #{cand.id}</div>
           <div className="name">{cand.name}</div>
           {cand.nameEn && <div className="muted">{cand.nameEn}</div>}
           <div className="small muted">
-            {cand.brand ?? 'no brand'} · {cand.sizeValue ? `${cand.sizeValue} ${cand.sizeUnit}` : 'no size'} · {cand.barcode ?? 'no barcode'}
+            {cand.brand ?? 'առանց բրենդի'} · {cand.sizeValue ? `${cand.sizeValue} ${cand.sizeUnit}` : 'առանց չափի'} · {cand.barcode ?? 'առանց բարկոդի'}
           </div>
         </div>
       </div>
       <ErrorBox error={approve.error ?? reject.error ?? map.error} />
       <div className="actions">
-        <button className="primary" disabled={approve.isPending} onClick={() => approve.mutate()}>Approve</button>
-        <button className="danger-btn" disabled={reject.isPending} onClick={() => reject.mutate()}>Reject</button>
-        <button onClick={() => setSearching(!searching)}>Search product</button>
+        <button className="primary" disabled={approve.isPending} onClick={() => approve.mutate()}>Հաստատել</button>
+        <button className="danger-btn" disabled={reject.isPending} onClick={() => reject.mutate()}>Մերժել</button>
+        <button onClick={() => setSearching(!searching)}>Որոնել ապրանք</button>
       </div>
       {searching && (
         <CanonicalPicker initialQuery={(sp.externalNameEn ?? sp.externalName).split(' ').slice(0, 3).join(' ')}
@@ -64,19 +65,19 @@ export function MatchReviewPage() {
   const list = useQuery({ queryKey: ['candidates', status, page], queryFn: () => adminApi.candidates(status, page) });
   return (
     <>
-      <h1>Match review</h1>
+      <h1>Համընկնումների ստուգում</h1>
       <p className="muted">
-        Uncertain matches (60–90% confidence). Approve to merge the store product into the candidate canonical product,
-        reject to keep them separate, or search for the right product.
+        Անվստահ համընկնումներ (60–90% վստահություն)։ «Հաստատել»՝ խանութի ապրանքը միացնել թեկնածուին, «Մերժել»՝ թողնել
+        առանձին, կամ որոնել ճիշտ ապրանքը։
       </p>
       <div className="toolbar">
         <select value={status} onChange={(e) => { setPage(0); setStatus(e.target.value); }}>
-          {['PENDING', 'APPROVED', 'REJECTED', 'AUTO_APPROVED'].map((s) => <option key={s}>{s}</option>)}
+          {['PENDING', 'APPROVED', 'REJECTED', 'AUTO_APPROVED'].map((s) => <option key={s} value={s}>{statusLabel(s)}</option>)}
         </select>
       </div>
       <ErrorBox error={list.error} />
       <Card>
-        {list.data?.items.length === 0 && <p className="muted">Nothing to review.</p>}
+        {list.data?.items.length === 0 && <p className="muted">Ստուգելու բան չկա։</p>}
         {list.data?.items.map((c) => <CandidateCard key={c.id} c={c} />)}
         {list.data && <Pager page={page} size={20} total={list.data.total} onPage={setPage} />}
       </Card>

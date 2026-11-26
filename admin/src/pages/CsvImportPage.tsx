@@ -4,37 +4,37 @@ import { adminApi } from '../api';
 import { Card, ErrorBox } from '../components';
 
 const EXAMPLE = `store,externalProductId,name,brand,barcode,price,currency,available,capturedAt
-nor-zovq,12345,<real product name>,<brand>,<barcode or empty>,<price>,AMD,true,2026-10-08T10:00:00+04:00`;
+nor-zovq,12345,<ապրանքի իրական անունը>,<բրենդ>,<բարկոդ կամ դատարկ>,<գին>,AMD,true,2026-10-08T10:00:00+04:00`;
 
 export function CsvImportPage() {
   const [file, setFile] = useState<File | null>(null);
   const upload = useMutation({ mutationFn: (f: File) => adminApi.importCsv(f) });
   return (
     <>
-      <h1>CSV import</h1>
-      <Card title="Upload real prices">
+      <h1>CSV ներմուծում</h1>
+      <Card title="Բեռնել իրական գներ">
         <p className="muted">
-          For stores that cannot be crawled. Only real, observed prices. Required columns: store (slug or name),
-          externalProductId, name, price, capturedAt. Optional: brand, barcode, currency, available, nameEn, originalPrice,
-          url, category, imageUrl. Rows go through normalization, price history and matching.
+          Այն խանութների համար, որոնց կայքը հնարավոր չէ քրոլ անել։ Միայն իրական, դիտարկված գներ։ Պարտադիր սյունակներ՝ store
+          (slug կամ անուն), externalProductId, name, price, capturedAt։ Ոչ պարտադիր՝ brand, barcode, currency, available, nameEn,
+          originalPrice, url, category, imageUrl։ Տողերն անցնում են նորմալացում, գների պատմություն և համընկնումների որոնում։
         </p>
         <pre>{EXAMPLE}</pre>
         <div className="toolbar">
           <input type="file" accept=".csv,text/csv" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           <button className="primary" disabled={!file || upload.isPending} onClick={() => file && upload.mutate(file)}>
-            {upload.isPending ? 'Importing…' : 'Import'}
+            {upload.isPending ? 'Ներմուծվում է…' : 'Ներմուծել'}
           </button>
         </div>
         <ErrorBox error={upload.error} />
         {upload.data && (
           <div>
             <p>
-              Rows: <b>{upload.data.rows}</b> · imported: <b>{upload.data.imported}</b> · prices changed: <b>{upload.data.pricesChanged}</b> ·
-              runs: {upload.data.runIds.join(', ') || '—'}
+              Տողեր՝ <b>{upload.data.rows}</b> · ներմուծված՝ <b>{upload.data.imported}</b> · փոխված գներ՝ <b>{upload.data.pricesChanged}</b> ·
+              գործարկումներ՝ {upload.data.runIds.join(', ') || '—'}
             </p>
             {upload.data.errors.length > 0 && (
               <table>
-                <thead><tr><th>Line</th><th>Error</th></tr></thead>
+                <thead><tr><th>Տող</th><th>Սխալ</th></tr></thead>
                 <tbody>{upload.data.errors.map((e, i) => <tr key={i}><td>{e.line}</td><td>{e.message}</td></tr>)}</tbody>
               </table>
             )}

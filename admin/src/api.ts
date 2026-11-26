@@ -143,6 +143,13 @@ export const adminApi = {
   categories: () => request<Category[]>('/api/categories'),
 };
 
-export const fmtDate = (iso: string | null | undefined) => (iso ? new Date(iso).toLocaleString('hy-AM') : '—');
+const pad = (n: number) => String(n).padStart(2, '0');
+/** dd.MM.yyyy HH:mm (24 h); browsers often lack hy-AM locale data, so the format is fixed. */
+export const fmtDate = (iso: string | null | undefined) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+export const fmtDay = (iso: string | null | undefined) => (iso ? fmtDate(iso).slice(0, 10) : '—');
 export const fmtNum = (n: number | null | undefined) => (n === null || n === undefined ? '—' : n.toLocaleString('en-US').replace(/,/g, ' '));
 export const fmtPrice = (n: number | null | undefined) => (n === null || n === undefined ? '—' : `${fmtNum(Math.round(n))} ֏`);

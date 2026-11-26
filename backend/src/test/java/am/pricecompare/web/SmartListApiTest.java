@@ -169,7 +169,7 @@ class SmartListApiTest {
         assertThat(premiumMilk.path("price").asInt()).isEqualTo(1200);
         assertThat(premiumMilk.path("pricePercentile").asInt()).isEqualTo(100);
         // butter has a single product: no premium alternative is reported, not invented
-        assertThat(strategy(c, "PREMIUM").path("notes").toString()).contains("no premium alternative");
+        assertThat(strategy(c, "PREMIUM").path("notes").toString()).contains("պրեմիում այլընտրանք չկա");
 
         // strategies are ordered by cost and differences are reported
         int cheap = strategy(c, "CHEAPEST").path("total").asInt();

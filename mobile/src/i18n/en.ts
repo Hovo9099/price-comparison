@@ -59,6 +59,13 @@ export const en: Strings = {
   retry: 'Retry',
   loading: 'Loading…',
   serverUnreachable: 'Server unreachable. Check the address in Profile.',
+  httpError: {
+    notFound: 'Not found',
+    badRequest: 'Invalid data',
+    conflict: 'This action is not possible',
+    tooMany: 'Too many requests, try again shortly',
+    server: 'Server error, try again later',
+  },
   freshness: { FRESH: 'Fresh', RECENT: 'Recent', STALE: 'Stale', OUTDATED: 'Outdated' },
   time: {
     justNow: 'just now',

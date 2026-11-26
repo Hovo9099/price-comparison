@@ -1,6 +1,8 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useI18n } from '../i18n';
+import type { Strings } from '../i18n/hy';
+import { ApiError } from '../api/client';
 import { colors, spacing } from './theme';
 
 export function Loading() {
@@ -13,9 +15,22 @@ export function Loading() {
   );
 }
 
+/** User-facing text for an error, always in the app language (server error details are not shown). */
+export function errorText(t: Strings, error: unknown): string {
+  if (error instanceof TypeError) return t.serverUnreachable;
+  if (error instanceof ApiError) {
+    if (error.status === 404) return t.httpError.notFound;
+    if (error.status === 409) return t.httpError.conflict;
+    if (error.status === 429) return t.httpError.tooMany;
+    if (error.status >= 500) return t.httpError.server;
+    return t.httpError.badRequest;
+  }
+  return t.httpError.server;
+}
+
 export function ErrorView({ error, onRetry }: { error: unknown; onRetry?: () => void }) {
   const { t } = useI18n();
-  const message = error instanceof TypeError ? t.serverUnreachable : error instanceof Error ? error.message : String(error);
+  const message = errorText(t, error);
   return (
     <View style={styles.center}>
       <Text style={styles.error}>{t.error}</Text>

@@ -11,16 +11,16 @@ import { CsvImportPage } from './pages/CsvImportPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 const PAGES = {
-  dashboard: { label: 'Crawlers', component: DashboardPage },
-  history: { label: 'Crawl history', component: CrawlHistoryPage },
-  products: { label: 'Canonical products', component: ProductsPage },
-  storeProducts: { label: 'Store products & mapping', component: StoreProductsPage },
-  review: { label: 'Match review', component: MatchReviewPage },
-  anomalies: { label: 'Price anomalies', component: AnomaliesPage },
-  delivery: { label: 'Delivery terms', component: DeliveryPage },
-  locations: { label: 'Store branches', component: LocationsPage },
-  csv: { label: 'CSV import', component: CsvImportPage },
-  settings: { label: 'Settings', component: SettingsPage },
+  dashboard: { label: 'Քրոլերներ', component: DashboardPage },
+  history: { label: 'Քրոլինգի պատմություն', component: CrawlHistoryPage },
+  products: { label: 'Ընդհանուր ապրանքներ', component: ProductsPage },
+  storeProducts: { label: 'Խանութների ապրանքներ և կապում', component: StoreProductsPage },
+  review: { label: 'Համընկնումների ստուգում', component: MatchReviewPage },
+  anomalies: { label: 'Կասկածելի գներ', component: AnomaliesPage },
+  delivery: { label: 'Առաքման պայմաններ', component: DeliveryPage },
+  locations: { label: 'Մասնաճյուղեր', component: LocationsPage },
+  csv: { label: 'CSV ներմուծում', component: CsvImportPage },
+  settings: { label: 'Կարգավորումներ', component: SettingsPage },
 } as const;
 
 type PageKey = keyof typeof PAGES;
@@ -35,7 +35,7 @@ export default function App() {
   return (
     <div className="layout">
       <nav className="sidebar">
-        <div className="brand">Where Is It Cheapest?<span>admin</span></div>
+        <div className="brand">Որտե՞ղ է էժան<span>ադմին</span></div>
         {(Object.keys(PAGES) as PageKey[]).map((k) => (
           <button key={k} className={k === page ? 'nav active' : 'nav'} onClick={() => go(k)}>
             {PAGES[k].label}

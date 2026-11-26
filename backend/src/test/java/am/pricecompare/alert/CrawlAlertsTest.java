@@ -49,14 +49,14 @@ class CrawlAlertsTest {
     @Test
     void failedRunAlerts() {
         crawlAlerts.onCrawlFinished(event(5, CrawlStatus.FAILED, 0, 0, 0, "java.io.IOException: 403"));
-        verify(alerts).alert(argThat(s -> s.contains("TestMart") && s.contains("FAILED") && s.contains("403")));
+        verify(alerts).alert(argThat(s -> s.contains("TestMart") && s.contains("ՁԱԽՈՂՎԵՑ") && s.contains("403")));
     }
 
     @Test
     void shrunkCatalogAlertsButNormalRunDoesNot() {
         when(runs.findCompleteCrawls(eq(1L), any())).thenReturn(List.of(run(9, 300, Instant.now()), run(8, 1000, Instant.now())));
         crawlAlerts.onCrawlFinished(event(9, CrawlStatus.SUCCESS, 300, 0, 0, null));
-        verify(alerts).alert(argThat(s -> s.contains("300") && s.contains("1000") && s.contains("may have changed")));
+        verify(alerts).alert(argThat(s -> s.contains("300") && s.contains("1000") && s.contains("կայքը փոխվել է")));
 
         reset(alerts);
         when(runs.findCompleteCrawls(eq(1L), any())).thenReturn(List.of(run(10, 950, Instant.now()), run(9, 1000, Instant.now())));
@@ -69,7 +69,7 @@ class CrawlAlertsTest {
     @Test
     void manyErrorsAlert() {
         crawlAlerts.onCrawlFinished(event(5, CrawlStatus.PARTIAL, 1000, 120, 100, null));
-        verify(alerts).alert(argThat(s -> s.contains("120 errors")));
+        verify(alerts).alert(argThat(s -> s.contains("120 սխալ")));
     }
 
     @Test
@@ -91,6 +91,6 @@ class CrawlAlertsTest {
         props.setScheduleCron("0 0 5 * * *");
         crawlAlerts.checkStale();
         crawlAlerts.checkStale();
-        verify(alerts, times(1)).alert(argThat(m -> m.contains("TestMart") && m.contains("50 h")));
+        verify(alerts, times(1)).alert(argThat(m -> m.contains("TestMart") && m.contains("50 ժամ")));
     }
 }
