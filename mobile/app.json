@@ -18,7 +18,8 @@
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
-        }
+        },
+        "CFBundleDevelopmentRegion": "hy"
       }
     },
     "android": {
@@ -26,7 +27,13 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "am.pricecompare.mobile"
+      "package": "am.pricecompare.mobile",
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
     },
     "plugins": [
       "expo-asset",
@@ -34,7 +41,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Տեսախցիկն օգտագործվում է ապրանքի բարկոդը սկանավորելու և գները համեմատելու համար։ / The camera is used to scan product barcodes and compare prices.",
+          "cameraPermission": "Տեսախցիկն օգտագործվում է ապրանքի բարկոդը սկանավորելու և գները համեմատելու համար։",
+          "microphonePermission": false,
           "recordAudioAndroid": false
         }
       ],
@@ -47,7 +55,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Տեղորոշումն օգտագործվում է մոտակա խանութները գտնելու համար և չի պահվում։ / Location is used to find nearby stores and is not stored."
+          "locationWhenInUsePermission": "Տեղորոշումն օգտագործվում է մոտակա խանութները գտնելու համար և չի պահվում։"
         }
       ]
     ]
