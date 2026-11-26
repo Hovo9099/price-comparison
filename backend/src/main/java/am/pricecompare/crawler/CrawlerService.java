@@ -202,15 +202,18 @@ public class CrawlerService {
             finish(runId, status, msg, ctx);
             log.info("Crawl {} for {} finished: {} (discovered={}, updated={}, prices={}, errors={})", runId, storeCode,
                     status, ctx.discovered.get(), ctx.updated.get(), ctx.pricesUpdated.get(), ctx.errors.get());
-            if (status != CrawlStatus.FAILED) {
-                publishFinished(new CrawlFinishedEvent(store.getId(), runId, status, ctx.pricesUpdated.get()));
-            }
+            publishFinished(new CrawlFinishedEvent(store.getId(), store.getName(), runId, status, ctx.discovered.get(),
+                    ctx.pricesUpdated.get(), ctx.errors.get(), max, msg));
         } catch (RuntimeException e) {
             log.error("Crawl {} for {} failed", runId, storeCode, e);
             if (ctx != null) {
                 ctx.flushStats();
             }
             finish(runId, CrawlStatus.FAILED, e.toString(), ctx);
+            final RunContext failed = ctx;
+            storeRepo.findBySlug(storeCode).ifPresent(st -> publishFinished(new CrawlFinishedEvent(st.getId(), st.getName(), runId,
+                    CrawlStatus.FAILED, failed == null ? 0 : failed.discovered.get(), failed == null ? 0 : failed.pricesUpdated.get(),
+                    failed == null ? 0 : failed.errors.get(), max, e.toString())));
         } finally {
             runningByStore.remove(storeCode, runId);
             cancelFlags.remove(runId);

@@ -124,6 +124,11 @@ curl -X POST -H "X-Admin-Token: $ADMIN_TOKEN" "http://localhost:8080/api/admin/c
 
 Scheduled crawls: set `CRAWLER_SCHEDULE_CRON="0 0 5 * * *"` (daily 05:00 Yerevan time).
 
+**Crawl alerts**: set `ALERT_TELEGRAM_BOT_TOKEN` + `ALERT_TELEGRAM_CHAT_ID` and/or `ALERT_WEBHOOK_URL` (Slack, Discord,
+Mattermost…) to be told when a crawl fails, when a full crawl finds less than half the products of the previous full
+crawl (usually a changed store website), when a run has many errors, or — with scheduled crawls — when a store had no
+successful crawl for `ALERT_STALE_HOURS` (default 36). Alerts are always written to the log as `ALERT:`.
+
 **Re-run product matching** over all stored products after changing matching rules (no re-crawl):
 
 ```bash
