@@ -406,3 +406,20 @@ export interface PriceWatch {
   lastNotifiedAt: string | null;
   createdAt: string;
 }
+
+export type DealVerdict = 'GENUINE' | 'INFLATED' | 'UNVERIFIED';
+
+export interface Deal {
+  product: ProductSummary;
+  storeId: number;
+  storeName: string;
+  storeSlug: string;
+  price: number;
+  originalPrice: number;
+  discountPercent: number;
+  verdict: DealVerdict;
+  maxPaid90Days: number | null;
+  historyDays: number;
+  since: string;
+  cheapestAnywhere: boolean;
+}

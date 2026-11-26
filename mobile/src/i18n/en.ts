@@ -151,6 +151,23 @@ export const en: Strings = {
     CATALOG_UNAVAILABLE: 'Catalog unavailable',
     NOT_INTEGRATED: 'Not integrated',
   },
+  deals: {
+    tab: 'Deals',
+    title: 'Deals',
+    allStores: 'All stores',
+    allCategories: 'All',
+    showInflated: 'Also show questionable discounts',
+    genuine: '✓ Real discount',
+    genuineHint: (p: string) => `Sold at ${p} within the last 90 days`,
+    inflated: '⚠ Questionable discount',
+    inflatedHint: (p: string | null) => p
+      ? `The "old" price was not charged in the last 90 days; the highest was ${p}`
+      : 'The "old" price was not charged in the last 90 days',
+    unverified: 'Little data',
+    unverifiedHint: 'Price history for this listing is still too short to check',
+    cheapestAnywhere: 'Cheapest across all stores',
+    empty: 'No discounts right now',
+  },
   watch: {
     follow: 'Follow price',
     following: 'Following price',

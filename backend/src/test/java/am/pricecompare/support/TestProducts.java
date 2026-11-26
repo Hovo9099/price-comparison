@@ -22,6 +22,13 @@ public final class TestProducts {
                 Map.of("test", true));
     }
 
+    /** A listing shown with a crossed-out "old" price. */
+    public static DiscoveredProduct discounted(String externalId, String name, String price, String originalPrice, Instant capturedAt) {
+        return new DiscoveredProduct(externalId, null, null, name, null, null, null, "https://test.invalid/p/" + externalId,
+                null, new BigDecimal(price), new BigDecimal(originalPrice), null, null, "AMD", true, false, null, null, false,
+                capturedAt, Map.of("test", true));
+    }
+
     public static DiscoveredProduct product(String externalId, String name, String price, Instant capturedAt) {
         return product(externalId, name, null, null, null, price, capturedAt);
     }

@@ -4,6 +4,7 @@ import type {
   Comparison,
   ComparePreferences,
   Concept,
+  Deal,
   ParseResult,
   Category,
   Page,
@@ -64,6 +65,8 @@ export const api = {
   offers: (id: number) => request<ProductOffers>(`/api/products/${id}/offers`),
   history: (id: number, days = 90) => request<PriceHistory>(`/api/products/${id}/history?days=${days}`),
   priceDrops: (days = 7, limit = 10) => request<PriceDrop[]>(`/api/products/price-drops?${q({ days, limit })}`),
+  deals: (params: { categoryId?: number; storeId?: number; includeInflated?: boolean; page?: number }) =>
+    request<Page<Deal>>(`/api/deals?${q({ ...params, includeInflated: params.includeInflated ? 'true' : undefined, size: 20 })}`),
   categories: () => request<Category[]>('/api/categories'),
   stores: () => request<Store[]>('/api/stores'),
   createList: (name: string) => request<ShoppingList>('/api/shopping-lists', { method: 'POST', body: JSON.stringify({ name }) }),

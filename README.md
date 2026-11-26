@@ -158,7 +158,7 @@ Release builds should talk to the backend over HTTPS (Android blocks clear-text 
 Screens: Shopping list (multi-product input with suggestions, type choices, size chips, quantities, saved lists),
 Results (Cheapest / Mid-range / Premium tabs), Preferences, Home (search, categories, recent searches, price drops, shopping list), Search, Product details
 (cheapest price, store comparison with "updated X ago", add to list, price-history chart), Price comparison,
-Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
+Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Deals tab (real vs questionable discounts), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
 
 ## 8. Run tests
 
@@ -216,6 +216,7 @@ kat, dzu 10, 2 hac, karag, coca cola 1.5l, kartofil 2kg, panir
 | GET | `/api/products/{id}/prices` | current price per store, cheapest, `capturedAt`, `ageHours`, `freshness` |
 | GET | `/api/products/{id}/history?days=90` | price observations per store |
 | GET | `/api/products/price-drops` | recent price drops |
+| GET | `/api/deals?categoryId=&storeId=&includeInflated=` | current discounts with a verdict: `GENUINE` (old price charged within 90 days), `INFLATED` (never charged – hidden by default), `UNVERIFIED` (< 14 days of history) |
 | GET | `/api/categories` | reference data |
 | GET | `/api/stores` | stores with `catalogState` (COMPLETE / PARTIAL / NOT_IMPORTED / UNAVAILABLE / NOT_IMPLEMENTED), listing counts, last complete crawl, last price update |
 | GET | `/api/stores/{id}/products?q=&availableOnly=` | a store's own listings with current prices (paged) |

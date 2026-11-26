@@ -150,6 +150,23 @@ export const hy = {
     CATALOG_UNAVAILABLE: 'Կատալոգը հասանելի չէ',
     NOT_INTEGRATED: 'Միացված չէ',
   } as Record<string, string>,
+  deals: {
+    tab: 'Զեղչեր',
+    title: 'Զեղչեր',
+    allStores: 'Բոլոր խանութները',
+    allCategories: 'Բոլորը',
+    showInflated: 'Ցույց տալ նաև կասկածելի զեղչերը',
+    genuine: '✓ Իրական զեղչ',
+    genuineHint: (p: string) => `Վերջին 90 օրում գինը եղել է ${p}`,
+    inflated: '⚠ Կասկածելի զեղչ',
+    inflatedHint: (p: string | null) => p
+      ? `Վերջին 90 օրում «հին գինը» չի կիրառվել, առավելագույնը եղել է ${p}`
+      : 'Վերջին 90 օրում «հին գինը» չի կիրառվել',
+    unverified: 'Քիչ տվյալ',
+    unverifiedHint: 'Այս ապրանքի գնի պատմությունը դեռ կարճ է ստուգելու համար',
+    cheapestAnywhere: 'Ամենաէժանը բոլոր խանութներում',
+    empty: 'Այս պահին զեղչեր չկան',
+  },
   watch: {
     follow: 'Հետևել գնին',
     following: 'Հետևում եք գնին',

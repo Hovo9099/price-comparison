@@ -25,6 +25,15 @@ export function useSearch(query: string, categoryId?: number) {
   });
 }
 
+export function useDeals(filters: { categoryId?: number; storeId?: number; includeInflated?: boolean }) {
+  return useInfiniteQuery({
+    queryKey: ['deals', filters.categoryId, filters.storeId, !!filters.includeInflated],
+    queryFn: ({ pageParam }) => api.deals({ ...filters, page: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (last) => ((last.page + 1) * last.size < last.total ? last.page + 1 : undefined),
+  });
+}
+
 export function useBrowse(categoryId?: number) {
   return useInfiniteQuery({
     queryKey: keys.browse(categoryId),

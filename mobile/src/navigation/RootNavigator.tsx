@@ -6,6 +6,7 @@ import { colors } from '../components/theme';
 import { useI18n } from '../i18n';
 import { BasketScreen } from '../screens/BasketScreen';
 import { CategoryScreen } from '../screens/CategoryScreen';
+import { DealsScreen } from '../screens/DealsScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { PriceComparisonScreen } from '../screens/PriceComparisonScreen';
 import { ProductDetailsScreen } from '../screens/ProductDetailsScreen';
@@ -31,6 +32,7 @@ function Tabs() {
     <Tab.Navigator screenOptions={{ tabBarActiveTintColor: colors.primary, headerShown: false }}>
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{ title: t.tabs.home, tabBarIcon: icon('🏠') }} />
       <Tab.Screen name="SearchTab" component={SearchScreen} options={{ title: t.tabs.search, tabBarIcon: icon('🔍') }} />
+      <Tab.Screen name="DealsTab" component={DealsScreen} options={{ title: t.deals.tab, tabBarIcon: icon('🏷️') }} />
       <Tab.Screen name="ListTab" component={SmartListScreen} options={{ title: t.tabs.list, tabBarIcon: icon('🛒') }} />
       <Tab.Screen name="ProfileTab" component={ProfileScreen} options={{ title: t.tabs.profile, tabBarIcon: icon('👤') }} />
     </Tab.Navigator>
