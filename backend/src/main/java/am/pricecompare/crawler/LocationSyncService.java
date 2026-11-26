@@ -31,7 +31,7 @@ public class LocationSyncService {
         }
         Store store = em.getReference(Store.class, storeId);
         Map<String, StoreLocation> existing = new HashMap<>();
-        em.createQuery("select l from StoreLocation l where l.store.id = :id", StoreLocation.class)
+        em.createQuery("select l from StoreLocation l where l.store.id = :id and l.manual = false", StoreLocation.class)
                 .setParameter("id", storeId).getResultList().forEach(l -> existing.put(l.getName(), l));
         Set<String> seen = new HashSet<>();
         for (DiscoveredLocation d : locations) {

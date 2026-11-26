@@ -43,6 +43,12 @@
         {
           "color": "#0E7C5A"
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Տեղորոշումն օգտագործվում է մոտակա խանութները գտնելու համար և չի պահվում։ / Location is used to find nearby stores and is not stored."
+        }
       ]
     ]
   }

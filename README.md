@@ -69,7 +69,7 @@ java -jar target/price-comparison-backend.jar --spring.main.web-application-type
 
 Migrations live in `backend/src/main/resources/db/migration` (`V1` schema, `V2` real stores + categories —
 no products or prices, `V3` crawl heartbeat, `V4` activates Supermarket.am, `V5` smart shopping list, `V6` catalog
-coverage, `V7` Parma, `V8` price watches, `V9` price anomalies).
+coverage, `V7` Parma, `V8` price watches, `V9` price anomalies, `V10` manual store branches).
 
 ## 4. Start the backend
 
@@ -163,7 +163,7 @@ Release builds should talk to the backend over HTTPS (Android blocks clear-text 
 Screens: Shopping list (multi-product input with suggestions, type choices, size chips, quantities, saved lists),
 Results (Cheapest / Mid-range / Premium tabs), Preferences, Home (search, categories, recent searches, price drops, shopping list), Search, Product details
 (cheapest price, store comparison with "updated X ago", add to list, price-history chart), Price comparison,
-Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Deals tab (real vs questionable discounts), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
+Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Deals tab (real vs questionable discounts), Nearby stores (Home → 📍; branches crawled from Yerevan City or entered in Admin → Store branches), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
 
 ## 8. Run tests
 
@@ -224,6 +224,7 @@ kat, dzu 10, 2 hac, karag, coca cola 1.5l, kartofil 2kg, panir
 | GET | `/api/deals?categoryId=&storeId=&includeInflated=` | current discounts with a verdict: `GENUINE` (old price charged within 90 days), `INFLATED` (never charged – hidden by default), `UNVERIFIED` (< 14 days of history) |
 | GET | `/api/categories` | reference data |
 | GET | `/api/stores` | stores with `catalogState` (COMPLETE / PARTIAL / NOT_IMPORTED / UNAVAILABLE / NOT_IMPLEMENTED), listing counts, last complete crawl, last price update |
+| GET | `/api/stores/nearby?lat=&lon=` | nearest known branch of each store with distance (coordinates are not stored) |
 | GET | `/api/stores/{id}/products?q=&availableOnly=` | a store's own listings with current prices (paged) |
 | POST | `/api/shopping-lists` | create list |
 | GET | `/api/shopping-lists/{id}` | list with cheapest price per item |

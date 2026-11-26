@@ -435,3 +435,15 @@ export interface Deal {
   since: string;
   cheapestAnywhere: boolean;
 }
+
+export interface NearbyStore {
+  storeId: number;
+  storeName: string;
+  storeSlug: string;
+  locationId: number;
+  name: string;
+  address: string | null;
+  latitude: number;
+  longitude: number;
+  distanceKm: number;
+}

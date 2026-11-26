@@ -21,4 +21,8 @@ public class StoreLocation {
     private BigDecimal latitude;
     private BigDecimal longitude;
     private boolean active = true;
+    /** Entered by an admin; crawler sync leaves it alone. */
+    private boolean manual;
+    /** Where a manual entry came from (the store's page). */
+    private String source;
 }

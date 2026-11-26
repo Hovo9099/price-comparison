@@ -29,6 +29,15 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+/** For endpoints answering 204 No Content. */
+async function fetchNoContent(path: string, method: string): Promise<void> {
+  const headers: Record<string, string> = {};
+  const token = getToken();
+  if (token) headers['X-Admin-Token'] = token;
+  const res = await fetch(BASE + path, { method, headers });
+  if (!res.ok) throw new ApiError(res.status, res.statusText);
+}
+
 export interface Page<T> { items: T[]; page: number; size: number; total: number }
 export type CrawlStatus = 'RUNNING' | 'SUCCESS' | 'PARTIAL' | 'FAILED' | 'UNAVAILABLE';
 
@@ -88,7 +97,18 @@ export interface DeliveryTerms {
 }
 export interface StoreDelivery { id: number; name: string; slug: string; websiteUrl: string; delivery: DeliveryTerms | null }
 
+export interface StoreLocation {
+  id: number; name: string; address: string | null; latitude: number | null; longitude: number | null;
+  active: boolean; manual: boolean; source: string | null;
+}
+export type LocationInput = { name: string; address: string | null; latitude: number; longitude: number; source: string };
+
 export const adminApi = {
+  locations: (storeId: number) => request<StoreLocation[]>(`/api/admin/stores/${storeId}/locations`),
+  addLocation: (storeId: number, body: LocationInput) =>
+    request<StoreLocation>(`/api/admin/stores/${storeId}/locations`, { method: 'POST', body: JSON.stringify(body) }),
+  deactivateLocation: (storeId: number, id: number) =>
+    fetchNoContent(`/api/admin/stores/${storeId}/locations/${id}`, 'DELETE'),
   storeDelivery: () => request<StoreDelivery[]>('/api/admin/stores'),
   setStoreDelivery: (id: number, body: Omit<DeliveryTerms, 'checkedAt'>) =>
     request<StoreDelivery>(`/api/admin/stores/${id}/delivery`, { method: 'PUT', body: JSON.stringify(body) }),

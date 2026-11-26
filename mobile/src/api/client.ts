@@ -5,6 +5,7 @@ import type {
   ComparePreferences,
   Concept,
   Deal,
+  NearbyStore,
   ParseResult,
   Category,
   Page,
@@ -67,6 +68,7 @@ export const api = {
   priceDrops: (days = 7, limit = 10) => request<PriceDrop[]>(`/api/products/price-drops?${q({ days, limit })}`),
   deals: (params: { categoryId?: number; storeId?: number; includeInflated?: boolean; page?: number }) =>
     request<Page<Deal>>(`/api/deals?${q({ ...params, includeInflated: params.includeInflated ? 'true' : undefined, size: 20 })}`),
+  nearbyStores: (lat: number, lon: number) => request<NearbyStore[]>(`/api/stores/nearby?${q({ lat, lon })}`),
   categories: () => request<Category[]>('/api/categories'),
   stores: () => request<Store[]>('/api/stores'),
   createList: (name: string) => request<ShoppingList>('/api/shopping-lists', { method: 'POST', body: JSON.stringify({ name }) }),

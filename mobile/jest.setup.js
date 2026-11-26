@@ -14,3 +14,9 @@ jest.mock('expo-notifications', () => ({
 }));
 jest.mock('expo-device', () => ({ isDevice: false }));
 jest.mock('expo-crypto', () => ({ randomUUID: () => 'test-device-0000-0000-000000000001' }));
+jest.mock('expo-location', () => ({
+  getForegroundPermissionsAsync: jest.fn(async () => ({ status: 'granted' })),
+  requestForegroundPermissionsAsync: jest.fn(async () => ({ status: 'granted' })),
+  getCurrentPositionAsync: jest.fn(async () => ({ coords: { latitude: 40.18123, longitude: 44.51234 } })),
+  Accuracy: { Balanced: 3 },
+}));

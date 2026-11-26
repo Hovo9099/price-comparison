@@ -18,15 +18,25 @@ import java.util.List;
 public class CatalogController {
 
     private final CatalogService catalogService;
+    private final am.pricecompare.service.NearbyService nearbyService;
 
-    public CatalogController(CatalogService catalogService) {
+    public CatalogController(CatalogService catalogService, am.pricecompare.service.NearbyService nearbyService) {
         this.catalogService = catalogService;
+        this.nearbyService = nearbyService;
     }
 
     @GetMapping("/stores")
     @Operation(summary = "Supermarkets with their real catalog status (complete / partial / unavailable / not integrated)")
     public List<StoreDto> stores() {
         return catalogService.stores();
+    }
+
+    @GetMapping("/stores/nearby")
+    @io.swagger.v3.oas.annotations.Operation(summary = "Nearest known branch of each store, closest first",
+            description = "Coordinates are used for this calculation only and are not stored.")
+    public List<am.pricecompare.web.dto.NearbyStoreDto> nearby(@org.springframework.web.bind.annotation.RequestParam double lat,
+                                                               @org.springframework.web.bind.annotation.RequestParam double lon) {
+        return nearbyService.nearestPerStore(lat, lon);
     }
 
     @GetMapping("/stores/{id}/locations")

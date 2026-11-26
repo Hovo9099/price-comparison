@@ -74,6 +74,15 @@ export function HomeScreen() {
         </View>
       </View>
 
+      <View style={styles.quickRow}>
+        <Pressable style={styles.quick} onPress={() => navigation.navigate('Nearby')} accessibilityRole="button">
+          <Text style={styles.quickText}>📍 {t.nearby.button}</Text>
+        </Pressable>
+        <Pressable style={styles.quick} onPress={() => navigation.navigate('Watchlist')} accessibilityRole="button">
+          <Text style={styles.quickText}>🔔 {t.watch.title}</Text>
+        </Pressable>
+      </View>
+
       {recent.length > 0 && (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -160,6 +169,10 @@ const styles = StyleSheet.create({
   scanIcon: { fontSize: 18, color: colors.primary, fontWeight: '900' },
   scanText: { fontSize: 11, color: colors.primary, fontWeight: '700' },
   section: { marginTop: spacing.xl },
+  quickRow: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.lg },
+  quick: { flex: 1, backgroundColor: colors.card, borderRadius: 14, paddingVertical: spacing.md, alignItems: 'center',
+    borderWidth: 1, borderColor: colors.border },
+  quickText: { color: colors.primary, fontWeight: '700' },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   sectionTitle: { fontSize: 17, fontWeight: '700', color: colors.text, marginBottom: spacing.sm },
   link: { color: colors.primary, fontWeight: '600' },

@@ -175,6 +175,17 @@ export const en: Strings = {
     minOrder: (p: string) => `minimum order ${p}`,
     unknown: 'Delivery terms unknown',
   },
+  nearby: {
+    title: 'Nearby stores',
+    button: 'Nearby stores',
+    needPermission: 'Location access is needed to find the nearest branches. Your position is not stored.',
+    grant: 'Allow',
+    locating: 'Finding your location…',
+    km: (d: number) => (d < 1 ? `${Math.round(d * 1000)} m` : `${d.toFixed(1)} km`),
+    openMap: 'Map',
+    empty: 'No branch addresses yet',
+    note: 'The nearest known branch of each store.',
+  },
   watch: {
     follow: 'Follow price',
     following: 'Following price',

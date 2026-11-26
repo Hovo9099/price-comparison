@@ -18,4 +18,5 @@ export type RootStackParamList = {
   Preferences: undefined;
   Scan: undefined;
   Watchlist: undefined;
+  Nearby: undefined;
 };

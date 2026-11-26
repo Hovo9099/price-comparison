@@ -6,6 +6,7 @@ import { StoreProductsPage } from './pages/StoreProductsPage';
 import { MatchReviewPage } from './pages/MatchReviewPage';
 import { AnomaliesPage } from './pages/AnomaliesPage';
 import { DeliveryPage } from './pages/DeliveryPage';
+import { LocationsPage } from './pages/LocationsPage';
 import { CsvImportPage } from './pages/CsvImportPage';
 import { SettingsPage } from './pages/SettingsPage';
 
@@ -17,6 +18,7 @@ const PAGES = {
   review: { label: 'Match review', component: MatchReviewPage },
   anomalies: { label: 'Price anomalies', component: AnomaliesPage },
   delivery: { label: 'Delivery terms', component: DeliveryPage },
+  locations: { label: 'Store branches', component: LocationsPage },
   csv: { label: 'CSV import', component: CsvImportPage },
   settings: { label: 'Settings', component: SettingsPage },
 } as const;
