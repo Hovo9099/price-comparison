@@ -15,6 +15,7 @@ import { SmartListScreen } from '../screens/SmartListScreen';
 import { ResultsScreen } from '../screens/ResultsScreen';
 import { PreferencesScreen } from '../screens/PreferencesScreen';
 import { ScanScreen } from '../screens/ScanScreen';
+import { WatchlistScreen } from '../screens/WatchlistScreen';
 import type { RootStackParamList, TabParamList } from './types';
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -48,6 +49,7 @@ export function RootNavigator() {
       <Stack.Screen name="Results" component={ResultsScreen} options={{ title: t.cmp.title }} />
       <Stack.Screen name="Preferences" component={PreferencesScreen} options={{ title: t.prefs.title }} />
       <Stack.Screen name="Scan" component={ScanScreen} options={{ title: t.scan.title }} />
+      <Stack.Screen name="Watchlist" component={WatchlistScreen} options={{ title: t.watch.title }} />
     </Stack.Navigator>
   );
 }

@@ -7,6 +7,7 @@ import { FreshnessBadge } from '../components/FreshnessBadge';
 import { PriceHistoryChart } from '../components/PriceHistoryChart';
 import { ErrorView, Loading } from '../components/StateViews';
 import { StoreComparisonTable } from '../components/StoreComparisonTable';
+import { WatchButton } from '../components/WatchButton';
 import { colors, spacing } from '../components/theme';
 import { productName, useI18n } from '../i18n';
 import type { RootStackParamList } from '../navigation/types';
@@ -72,6 +73,7 @@ export function ProductDetailsScreen() {
         <Text style={styles.addText}>{added ? `✓ ${t.addedToList}` : `+ ${t.addToList}`}</Text>
       </Pressable>
       {add.isError ? <Text style={styles.unavailable}>{String((add.error as Error).message)}</Text> : null}
+      <WatchButton productId={product.id} />
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>

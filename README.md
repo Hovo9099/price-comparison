@@ -68,7 +68,8 @@ java -jar target/price-comparison-backend.jar --spring.main.web-application-type
 ```
 
 Migrations live in `backend/src/main/resources/db/migration` (`V1` schema, `V2` real stores + categories —
-no products or prices, `V3` crawl heartbeat, `V4` activates Supermarket.am).
+no products or prices, `V3` crawl heartbeat, `V4` activates Supermarket.am, `V5` smart shopping list, `V6` catalog
+coverage, `V7` Parma, `V8` price watches).
 
 ## 4. Start the backend
 
@@ -157,7 +158,7 @@ Release builds should talk to the backend over HTTPS (Android blocks clear-text 
 Screens: Shopping list (multi-product input with suggestions, type choices, size chips, quantities, saved lists),
 Results (Cheapest / Mid-range / Premium tabs), Preferences, Home (search, categories, recent searches, price drops, shopping list), Search, Product details
 (cheapest price, store comparison with "updated X ago", add to list, price-history chart), Price comparison,
-Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Profile (language հայերեն/English, server, data sources).
+Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
 
 ## 8. Run tests
 
@@ -230,6 +231,9 @@ kat, dzu 10, 2 hac, karag, coca cola 1.5l, kartofil 2kg, panir
 | GET | `/api/lexicon/suggest?q=kar` | concept suggestions while typing |
 | GET | `/api/lexicon/concepts` | all concepts with sizes and type choices |
 | GET | `/api/products/{id}/price-history` | price history (alias of `/history`) |
+| PUT | `/api/devices/me` | register this install's Expo push token + language (header `X-Device-Id`) |
+| GET | `/api/watches` | watched products with current cheapest price (header `X-Device-Id`) |
+| PUT/DELETE | `/api/watches/{productId}` | follow (optional `{"targetPrice":500}`) / stop following a product |
 | GET | `/api/crawler/status` | per store: products, last successful collection, freshness, last attempt |
 
 Admin endpoints (`/api/admin/**`, header `X-Admin-Token`): dashboard (per store: implemented, catalog state, last
@@ -240,6 +244,14 @@ run (`POST /api/admin/crawlers/{slugOrId}/run`) / cancel crawlers, crawl history
 cancelled. Only then does a missing product mean "not sold here"; otherwise the app says the catalog is not
 (fully) imported or not integrated. Nor Zovq has no public catalog (Cloudflare 525) and is reported as not
 integrated; the dashboard's "Check site" re-probes it.
+
+**Price watches**: the app follows products for an anonymous install (random UUID kept on the phone, sent as
+`X-Device-Id`). After every crawl that changed prices, each watch is compared with the cheapest non-outdated price:
+without a target a drop of ≥ 2 % notifies; with a target price the user is notified once per new low at or below it
+(re-armed when the price goes back above). Notifications go through the Expo push service (`PUSH_ENABLED`,
+optional `EXPO_ACCESS_TOKEN`); tokens Expo reports as unregistered are cleared. Push tokens require an EAS project:
+run `npx eas init` in `mobile/` once (adds `extra.eas.projectId` to app.json). Without it, or without permission,
+watches still work and drops are shown under Profile → Watched products.
 
 **Freshness**: FRESH < 24 h, RECENT 24–72 h, STALE 3–7 days, OUTDATED > 7 days. Outdated prices are shown with
 their age but never chosen as "cheapest" or used in basket optimization.

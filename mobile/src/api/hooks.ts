@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from './client';
-import { getShoppingListId, setShoppingListId } from '../storage/local';
+import { getDeviceId, getShoppingListId, setShoppingListId } from '../storage/local';
 import type { ShoppingList } from './types';
 
 export const keys = {
@@ -12,6 +12,7 @@ export const keys = {
   categories: ['categories'] as const,
   drops: ['priceDrops'] as const,
   list: ['shoppingList'] as const,
+  watches: ['watches'] as const,
 };
 
 export function useSearch(query: string, categoryId?: number) {
@@ -79,4 +80,24 @@ export function useListMutations(defaultName: string) {
       onSuccess,
     }),
   };
+}
+
+// ---- price watches ------------------------------------------------------------------------------
+
+export const useWatches = () =>
+  useQuery({ queryKey: keys.watches, queryFn: async () => api.watches(await getDeviceId()) });
+
+export function useWatchMutations() {
+  const qc = useQueryClient();
+  const onSuccess = () => qc.invalidateQueries({ queryKey: keys.watches });
+  const save = useMutation({
+    mutationFn: async ({ productId, targetPrice }: { productId: number; targetPrice?: number | null }) =>
+      api.watch(await getDeviceId(), productId, targetPrice),
+    onSuccess,
+  });
+  const remove = useMutation({
+    mutationFn: async (productId: number) => api.unwatch(await getDeviceId(), productId),
+    onSuccess,
+  });
+  return { save, remove };
 }

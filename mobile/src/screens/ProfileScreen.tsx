@@ -2,6 +2,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/types';
 import { api } from '../api/client';
 import { apiBaseUrl, setApiBaseUrl } from '../api/config';
 import { colors, spacing } from '../components/theme';
@@ -10,6 +13,7 @@ import { useI18n, type Language } from '../i18n';
 export function ProfileScreen() {
   const { t, language, setLanguage } = useI18n();
   const qc = useQueryClient();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [url, setUrl] = useState(apiBaseUrl());
   const stores = useQuery({ queryKey: ['stores'], queryFn: api.stores });
 
@@ -54,7 +58,13 @@ export function ProfileScreen() {
         </Text>
       ))}
 
-      <Text style={[styles.muted, { marginTop: spacing.xl }]}>🔔 {t.notificationsSoon}</Text>
+      <Pressable
+        style={[styles.button, { marginTop: spacing.xl, alignSelf: 'flex-start' }]}
+        onPress={() => navigation.navigate('Watchlist')}
+        accessibilityRole="button"
+      >
+        <Text style={styles.buttonText}>🔔 {t.watch.title}</Text>
+      </Pressable>
     </ScrollView>
     </SafeAreaView>
   );

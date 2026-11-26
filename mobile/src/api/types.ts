@@ -391,3 +391,18 @@ export interface Comparison {
   warnings: string[];
   calculatedAt: string;
 }
+
+export interface PriceWatch {
+  id: number;
+  productId: number;
+  name: string;
+  nameEn: string | null;
+  size: string | null;
+  imageUrl: string | null;
+  targetPrice: number | null;
+  startPrice: number | null;
+  cheapest: Cheapest | null;
+  dropped: boolean;
+  lastNotifiedAt: string | null;
+  createdAt: string;
+}

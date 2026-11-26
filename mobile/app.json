@@ -37,6 +37,12 @@
           "cameraPermission": "Տեսախցիկն օգտագործվում է ապրանքի բարկոդը սկանավորելու և գները համեմատելու համար։ / The camera is used to scan product barcodes and compare prices.",
           "recordAudioAndroid": false
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0E7C5A"
+        }
       ]
     ]
   }

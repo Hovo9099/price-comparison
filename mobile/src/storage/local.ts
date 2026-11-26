@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Crypto from 'expo-crypto';
 
 const LIST_KEY = 'shoppingListId';
 const RECENT_KEY = 'recentSearches';
@@ -74,4 +75,26 @@ export async function getPreferences(): Promise<StoredPreferences> {
 
 export async function setPreferences(p: StoredPreferences): Promise<void> {
   await AsyncStorage.setItem(PREFS_KEY, JSON.stringify(p));
+}
+
+// ---- anonymous install id (credential for price watches) ---------------------------------------
+
+const DEVICE_KEY = 'deviceId';
+let deviceIdCache: string | null = null;
+
+/** Random UUID identifying this install for price watches; created on first use. */
+export async function getDeviceId(): Promise<string> {
+  if (deviceIdCache) return deviceIdCache;
+  let id = await AsyncStorage.getItem(DEVICE_KEY);
+  if (!id) {
+    id = Crypto.randomUUID();
+    await AsyncStorage.setItem(DEVICE_KEY, id);
+  }
+  deviceIdCache = id;
+  return id;
+}
+
+/** True when this install has already used price watches (so it has a device id). */
+export async function hasDeviceId(): Promise<boolean> {
+  return deviceIdCache !== null || (await AsyncStorage.getItem(DEVICE_KEY)) !== null;
 }

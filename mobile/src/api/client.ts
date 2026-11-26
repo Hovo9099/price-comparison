@@ -10,6 +10,7 @@ import type {
   PriceComparison,
   PriceDrop,
   PriceHistory,
+  PriceWatch,
   ProductDetail,
   ProductOffers,
   ProductSummary,
@@ -29,6 +30,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: { Accept: 'application/json', 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
   });
+  if (res.status === 204) {
+    return undefined as T;
+  }
   if (!res.ok) {
     let detail = res.statusText;
     try {
@@ -83,6 +87,17 @@ export const api = {
   suggestConcepts: (q: string) => request<Concept[]>(`/api/lexicon/suggest?${q && `q=${encodeURIComponent(q)}`}&limit=6`),
   removeItem: (listId: number, itemId: number) =>
     request<ShoppingList>(`/api/shopping-lists/${listId}/items/${itemId}`, { method: 'DELETE' }),
+  registerDevice: (deviceId: string, pushToken: string | null, language: string) =>
+    request<void>('/api/devices/me', { method: 'PUT', headers: { 'X-Device-Id': deviceId }, body: JSON.stringify({ pushToken, language }) }),
+  watches: (deviceId: string) => request<PriceWatch[]>('/api/watches', { headers: { 'X-Device-Id': deviceId } }),
+  watch: (deviceId: string, productId: number, targetPrice?: number | null) =>
+    request<PriceWatch>(`/api/watches/${productId}`, {
+      method: 'PUT',
+      headers: { 'X-Device-Id': deviceId },
+      body: JSON.stringify({ targetPrice: targetPrice ?? null }),
+    }),
+  unwatch: (deviceId: string, productId: number) =>
+    request<void>(`/api/watches/${productId}`, { method: 'DELETE', headers: { 'X-Device-Id': deviceId } }),
   optimize: (listId: number, maxStores?: number) =>
     request<BasketOptimization>(`/api/shopping-lists/${listId}/optimize`, {
       method: 'POST',

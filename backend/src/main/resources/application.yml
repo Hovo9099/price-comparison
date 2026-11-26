@@ -36,6 +36,11 @@ app:
   admin:
     # Required for /api/admin/** when set. When empty, admin endpoints only accept requests from localhost.
     token: ${ADMIN_TOKEN:}
+  push:
+    # price-drop notifications via the Expo push service; false = watches work in the app only
+    enabled: ${PUSH_ENABLED:true}
+    # optional, only when "enhanced push security" is turned on for the Expo project
+    expo-access-token: ${EXPO_ACCESS_TOKEN:}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8081,http://localhost:19006}
 
