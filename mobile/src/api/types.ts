@@ -26,6 +26,18 @@ export interface Store {
   pricedListings?: number;
   lastCompleteCrawlAt?: string | null;
   lastPriceUpdateAt?: string | null;
+  delivery?: DeliveryTerms | null;
+}
+
+/** Delivery terms as published by the store; null amounts are unknown. */
+export interface DeliveryTerms {
+  fee: number | null;
+  freeFrom: number | null;
+  minOrder: number | null;
+  smallOrderBelow: number | null;
+  smallOrderFee: number | null;
+  source: string | null;
+  checkedAt: string | null;
 }
 
 /** One store's own listing with its own price (never merged with other stores). */

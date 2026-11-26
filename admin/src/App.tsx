@@ -5,6 +5,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { StoreProductsPage } from './pages/StoreProductsPage';
 import { MatchReviewPage } from './pages/MatchReviewPage';
 import { AnomaliesPage } from './pages/AnomaliesPage';
+import { DeliveryPage } from './pages/DeliveryPage';
 import { CsvImportPage } from './pages/CsvImportPage';
 import { SettingsPage } from './pages/SettingsPage';
 
@@ -15,6 +16,7 @@ const PAGES = {
   storeProducts: { label: 'Store products & mapping', component: StoreProductsPage },
   review: { label: 'Match review', component: MatchReviewPage },
   anomalies: { label: 'Price anomalies', component: AnomaliesPage },
+  delivery: { label: 'Delivery terms', component: DeliveryPage },
   csv: { label: 'CSV import', component: CsvImportPage },
   settings: { label: 'Settings', component: SettingsPage },
 } as const;

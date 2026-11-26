@@ -198,7 +198,7 @@ kat, dzu 10, 2 hac, karag, coca cola 1.5l, kartofil 2kg, panir
   comparable products, freshness and the store link.
 - **Preferences**: number of stores (any/1/2/3), include delivery fees when known, use stale (3–7 days) prices,
   preferred brands. Delivery fees are stored per store (`stores.delivery_fee`, `free_delivery_from`,
-  `min_order_amount`) and are **unknown (NULL) until verified from the store's published terms**; unknown fees are
+  `min_order_amount`, small-order tier; edited in Admin → Delivery terms with the source page, shown in `/api/stores` as `delivery`) and are **unknown (NULL) until verified from the store's published terms**; unknown fees are
   never assumed and are disclosed. Travel costs are never estimated.
 - **Matching confidence**: ≥ 0.95 merged automatically, 0.80–0.94 queued for review, below 0.80 never merged.
   Critical attributes always win over similarity: size, fat %, multipack, sugar-free/zero/light, lactose-free,

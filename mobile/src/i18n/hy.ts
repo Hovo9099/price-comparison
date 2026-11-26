@@ -167,6 +167,13 @@ export const hy = {
     cheapestAnywhere: 'Ամենաէժանը բոլոր խանութներում',
     empty: 'Այս պահին զեղչեր չկան',
   },
+  delivery: {
+    fee: (p: string) => `Առաքում՝ ${p}`,
+    freeFrom: (p: string) => `անվճար ${p}-ից`,
+    smallOrder: (below: string, fee: string) => `${below}-ից պակաս պատվերի դեպքում՝ ${fee}`,
+    minOrder: (p: string) => `նվազագույն պատվեր՝ ${p}`,
+    unknown: 'Առաքման պայմանները հայտնի չեն',
+  },
   watch: {
     follow: 'Հետևել գնին',
     following: 'Հետևում եք գնին',

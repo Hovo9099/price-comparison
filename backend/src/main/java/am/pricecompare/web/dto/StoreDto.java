@@ -13,8 +13,9 @@ import java.time.Instant;
  * @param pricedListings   active listings with a current, available price
  * @param lastCompleteCrawlAt end of the last crawl that covered the whole catalog
  * @param lastPriceUpdateAt newest price observation
+ * @param delivery         published delivery terms, null when unknown
  */
 public record StoreDto(Long id, String name, String slug, String websiteUrl, String logoUrl, boolean active,
                        boolean integrated, CatalogState catalogState, String catalogMessage, long listings, long pricedListings,
-                       Instant lastCompleteCrawlAt, Instant lastPriceUpdateAt) {
+                       Instant lastCompleteCrawlAt, Instant lastPriceUpdateAt, DeliveryTermsDto delivery) {
 }

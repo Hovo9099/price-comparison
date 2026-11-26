@@ -60,3 +60,7 @@ pre { background: #f5f6f8; padding: 10px; border-radius: 8px; overflow-x: auto; 
 .badge-complete { background: #e3f5e9; color: #1b8a3a; }
 .badge-not_imported { background: #fff4e0; color: #b26a00; }
 .badge-not_implemented { background: #eceef1; color: #555; }
+
+.delivery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }
+.delivery-grid label, label.block { display: flex; flex-direction: column; gap: 4px; }
+label.block { margin-bottom: 12px; }

@@ -178,7 +178,8 @@ public class CatalogService {
     static StoreDto toStoreDto(CatalogStatusService.StoreCatalog c) {
         var s = c.store();
         return new StoreDto(s.getId(), s.getName(), s.getSlug(), s.getWebsiteUrl(), s.getLogoUrl(), s.isActive(), c.implemented(),
-                c.state(), c.reason(), c.listings(), c.pricedListings(), c.lastCompleteCrawl(), c.lastPriceUpdate());
+                c.state(), c.reason(), c.listings(), c.pricedListings(), c.lastCompleteCrawl(), c.lastPriceUpdate(),
+                am.pricecompare.web.dto.DeliveryTermsDto.of(s));
     }
 
     /**

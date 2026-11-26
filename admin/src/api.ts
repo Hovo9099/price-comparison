@@ -82,7 +82,16 @@ export interface PriceAnomaly {
   productUrl: string | null; canonicalProductId: number | null; detectedAt: string; reviewedAt: string | null;
 }
 
+export interface DeliveryTerms {
+  fee: number | null; freeFrom: number | null; minOrder: number | null; smallOrderBelow: number | null;
+  smallOrderFee: number | null; source: string | null; checkedAt: string | null;
+}
+export interface StoreDelivery { id: number; name: string; slug: string; websiteUrl: string; delivery: DeliveryTerms | null }
+
 export const adminApi = {
+  storeDelivery: () => request<StoreDelivery[]>('/api/admin/stores'),
+  setStoreDelivery: (id: number, body: Omit<DeliveryTerms, 'checkedAt'>) =>
+    request<StoreDelivery>(`/api/admin/stores/${id}/delivery`, { method: 'PUT', body: JSON.stringify(body) }),
   anomalies: (status: AnomalyStatus, page: number) =>
     request<Page<PriceAnomaly>>(`/api/admin/anomalies?${qs({ status, page, size: 50 })}`),
   anomalyCounts: () => request<{ pending: number }>('/api/admin/anomalies/counts'),

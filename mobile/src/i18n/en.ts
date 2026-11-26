@@ -168,6 +168,13 @@ export const en: Strings = {
     cheapestAnywhere: 'Cheapest across all stores',
     empty: 'No discounts right now',
   },
+  delivery: {
+    fee: (p: string) => `Delivery ${p}`,
+    freeFrom: (p: string) => `free from ${p}`,
+    smallOrder: (below: string, fee: string) => `${fee} for orders under ${below}`,
+    minOrder: (p: string) => `minimum order ${p}`,
+    unknown: 'Delivery terms unknown',
+  },
   watch: {
     follow: 'Follow price',
     following: 'Following price',
