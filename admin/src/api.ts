@@ -75,7 +75,19 @@ export interface CsvResult { rows: number; imported: number; pricesChanged: numb
 const qs = (p: Record<string, unknown>) =>
   Object.entries(p).filter(([, v]) => v !== undefined && v !== null && v !== '').map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`).join('&');
 
+export type AnomalyStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED' | 'SUPERSEDED';
+export interface PriceAnomaly {
+  id: number; kind: 'SUDDEN_DROP' | 'SUDDEN_RISE' | 'BELOW_MARKET' | 'ABOVE_MARKET'; status: AnomalyStatus;
+  newPrice: number; referencePrice: number; storeProductId: number; storeName: string; productName: string;
+  productUrl: string | null; canonicalProductId: number | null; detectedAt: string; reviewedAt: string | null;
+}
+
 export const adminApi = {
+  anomalies: (status: AnomalyStatus, page: number) =>
+    request<Page<PriceAnomaly>>(`/api/admin/anomalies?${qs({ status, page, size: 50 })}`),
+  anomalyCounts: () => request<{ pending: number }>('/api/admin/anomalies/counts'),
+  confirmAnomaly: (id: number) => request<PriceAnomaly>(`/api/admin/anomalies/${id}/confirm`, { method: 'POST' }),
+  rejectAnomaly: (id: number) => request<PriceAnomaly>(`/api/admin/anomalies/${id}/reject`, { method: 'POST' }),
   dashboard: () => request<Dashboard>('/api/admin/dashboard'),
   runCrawler: (slug: string, maxProducts?: number) =>
     request<{ runId: number }>(`/api/admin/crawlers/${slug}/run?${qs({ maxProducts })}`, { method: 'POST' }),

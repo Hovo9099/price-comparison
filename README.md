@@ -69,7 +69,7 @@ java -jar target/price-comparison-backend.jar --spring.main.web-application-type
 
 Migrations live in `backend/src/main/resources/db/migration` (`V1` schema, `V2` real stores + categories —
 no products or prices, `V3` crawl heartbeat, `V4` activates Supermarket.am, `V5` smart shopping list, `V6` catalog
-coverage, `V7` Parma, `V8` price watches).
+coverage, `V7` Parma, `V8` price watches, `V9` price anomalies).
 
 ## 4. Start the backend
 
@@ -253,6 +253,11 @@ without a target a drop of ≥ 2 % notifies; with a target price the user is not
 optional `EXPO_ACCESS_TOKEN`); tokens Expo reports as unregistered are cleared. Push tokens require an EAS project:
 run `npx eas init` in `mobile/` once (adds `extra.eas.projectId` to app.json). Without it, or without permission,
 watches still work and drops are shown under Profile → Watched products.
+
+**Price anomalies**: when a listing's new price is ≤ 40 % or ≥ 2.5 × its last trusted price, or ≤ 25 % / ≥ 4 × the
+median of other stores for the same product, the price is stored as observed but flagged `suspect`: it is shown, but
+never used as the cheapest price, in baskets, deals, price drops or notifications. Admin → Price anomalies confirms
+(price is real) or rejects it; a newer price from the store supersedes a pending one.
 
 **Freshness**: FRESH < 24 h, RECENT 24–72 h, STALE 3–7 days, OUTDATED > 7 days. Outdated prices are shown with
 their age but never chosen as "cheapest" or used in basket optimization.

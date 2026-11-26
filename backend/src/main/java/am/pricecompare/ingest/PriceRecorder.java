@@ -5,6 +5,7 @@ import am.pricecompare.domain.PriceHistory;
 import am.pricecompare.domain.StoreProduct;
 import am.pricecompare.repository.PriceHistoryRepository;
 import am.pricecompare.repository.PriceRepository;
+import am.pricecompare.service.PriceAnomalyService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +29,12 @@ public class PriceRecorder {
 
     private final PriceRepository priceRepo;
     private final PriceHistoryRepository historyRepo;
+    private final PriceAnomalyService anomalies;
 
-    public PriceRecorder(PriceRepository priceRepo, PriceHistoryRepository historyRepo) {
+    public PriceRecorder(PriceRepository priceRepo, PriceHistoryRepository historyRepo, PriceAnomalyService anomalies) {
         this.priceRepo = priceRepo;
         this.historyRepo = historyRepo;
+        this.anomalies = anomalies;
     }
 
     public record Observation(BigDecimal price, BigDecimal originalPrice, BigDecimal unitPrice, String unitPriceUnit,
@@ -58,9 +61,11 @@ public class PriceRecorder {
                     || !sameAmount(current.getOriginalPrice(), original)
                     || current.isAvailable() != o.available();
             if (differs) {
+                BigDecimal lastTrusted = priceRepo.findLastTrusted(sp.getId()).map(Price::getPrice).orElse(null);
                 current.setValidTo(o.capturedAt());
                 priceRepo.saveAndFlush(current);
-                priceRepo.save(newPeriod(sp, o, original));
+                Price opened = priceRepo.saveAndFlush(newPeriod(sp, o, original));
+                anomalies.onNewPeriod(sp, opened, lastTrusted);
                 changed = true;
             } else {
                 if (o.capturedAt().isAfter(current.getCapturedAt())) {

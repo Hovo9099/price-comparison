@@ -64,12 +64,12 @@ public class DealService {
                        (select min(h.captured_at) from price_history h where h.store_product_id = sp.id) first_seen,
                        (select min(p2.price) from prices p2 join store_products sp2 on sp2.id = p2.store_product_id
                          where sp2.canonical_product_id = sp.canonical_product_id and sp2.id <> sp.id and sp2.active
-                           and p2.valid_to is null and p2.available and p2.captured_at >= :fresh) cheapest_other
+                           and p2.valid_to is null and p2.available and not p2.suspect and p2.captured_at >= :fresh) cheapest_other
                 from prices p
                 join store_products sp on sp.id = p.store_product_id and sp.active
                 join stores s on s.id = sp.store_id
                 join canonical_products c on c.id = sp.canonical_product_id and c.active
-                where p.valid_to is null and p.available and p.captured_at >= :fresh
+                where p.valid_to is null and p.available and not p.suspect and p.captured_at >= :fresh
                   and p.original_price is not null and p.original_price > p.price
                   and (cast(:categoryId as bigint) is null or c.category_id = :categoryId)
                   and (cast(:storeId as bigint) is null or sp.store_id = :storeId)

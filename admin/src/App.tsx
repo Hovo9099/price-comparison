@@ -4,6 +4,7 @@ import { CrawlHistoryPage } from './pages/CrawlHistoryPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { StoreProductsPage } from './pages/StoreProductsPage';
 import { MatchReviewPage } from './pages/MatchReviewPage';
+import { AnomaliesPage } from './pages/AnomaliesPage';
 import { CsvImportPage } from './pages/CsvImportPage';
 import { SettingsPage } from './pages/SettingsPage';
 
@@ -13,6 +14,7 @@ const PAGES = {
   products: { label: 'Canonical products', component: ProductsPage },
   storeProducts: { label: 'Store products & mapping', component: StoreProductsPage },
   review: { label: 'Match review', component: MatchReviewPage },
+  anomalies: { label: 'Price anomalies', component: AnomaliesPage },
   csv: { label: 'CSV import', component: CsvImportPage },
   settings: { label: 'Settings', component: SettingsPage },
 } as const;

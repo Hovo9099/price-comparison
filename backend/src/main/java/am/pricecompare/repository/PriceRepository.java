@@ -22,6 +22,11 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
 
     long countByValidToIsNull();
 
+    /** Most recent available, non-suspect price period of a listing (the baseline for anomaly checks). */
+    @Query(value = "select * from prices where store_product_id = :id and available and not suspect "
+            + "order by valid_from desc limit 1", nativeQuery = true)
+    Optional<Price> findLastTrusted(@Param("id") long storeProductId);
+
     /**
      * Current prices that dropped compared to the previous period, opened since {@code since}.
      * Returns [currentPriceId, previousPrice].
@@ -31,7 +36,7 @@ public interface PriceRepository extends JpaRepository<Price, Long> {
             from prices cur
             join prices prev on prev.store_product_id = cur.store_product_id and prev.valid_to = cur.valid_from
             join store_products sp on sp.id = cur.store_product_id
-            where cur.valid_to is null and cur.available and prev.available
+            where cur.valid_to is null and cur.available and prev.available and not cur.suspect and not prev.suspect
               and cur.price < prev.price and cur.valid_from >= :since
               and sp.canonical_product_id is not null and sp.active
             order by (prev.price - cur.price) / prev.price desc

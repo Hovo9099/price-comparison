@@ -35,9 +35,9 @@ public class OfferService {
     }
 
     public record Offer(StoreProduct storeProduct, Store store, Price price, Freshness freshness) {
-        /** Available, listed and not outdated. */
+        /** Available, listed, not outdated and not flagged as a suspicious price. */
         public boolean usable() {
-            return price.isAvailable() && storeProduct.isActive() && freshness.usableForComparison();
+            return price.isAvailable() && !price.isSuspect() && storeProduct.isActive() && freshness.usableForComparison();
         }
     }
 

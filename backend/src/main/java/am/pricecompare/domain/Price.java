@@ -27,6 +27,8 @@ public class Price {
     private String unitPriceUnit;
     private String currency = "AMD";
     private boolean available = true;
+    /** Flagged by anomaly detection: shown, but never used as cheapest / in baskets / for notifications. */
+    private boolean suspect;
     /** Last time this price was observed at the store. */
     private Instant capturedAt;
     private Instant validFrom;

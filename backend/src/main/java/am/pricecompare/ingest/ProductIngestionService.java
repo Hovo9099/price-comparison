@@ -9,6 +9,7 @@ import am.pricecompare.matching.MatchingService;
 import am.pricecompare.normalize.ParsedName;
 import am.pricecompare.normalize.ProductNormalizer;
 import am.pricecompare.repository.PriceRepository;
+import am.pricecompare.service.PriceAnomalyService;
 import am.pricecompare.repository.RawProductSnapshotRepository;
 import am.pricecompare.repository.StoreProductRepository;
 import jakarta.persistence.EntityManager;
@@ -34,16 +35,18 @@ public class ProductIngestionService {
     private final PriceRepository priceRepo;
     private final PriceRecorder priceRecorder;
     private final MatchingService matchingService;
+    private final PriceAnomalyService anomalies;
     private final EntityManager em;
 
     public ProductIngestionService(StoreProductRepository storeProductRepo, RawProductSnapshotRepository snapshotRepo,
                                    PriceRepository priceRepo, PriceRecorder priceRecorder,
-                                   MatchingService matchingService, EntityManager em) {
+                                   MatchingService matchingService, PriceAnomalyService anomalies, EntityManager em) {
         this.storeProductRepo = storeProductRepo;
         this.snapshotRepo = snapshotRepo;
         this.priceRepo = priceRepo;
         this.priceRecorder = priceRecorder;
         this.matchingService = matchingService;
+        this.anomalies = anomalies;
         this.em = em;
     }
 
@@ -104,6 +107,9 @@ public class ProductIngestionService {
             outcome = matchingService.matchAndLink(sp);
         } else if (!Objects.equals(oldNameEn, sp.getExternalNameEn()) || !Objects.equals(oldName, sp.getExternalName())) {
             matchingService.onStoreProductNamesChanged(sp);
+        }
+        if (changed && sp.getCanonicalProduct() != null) {
+            anomalies.checkAgainstMarket(sp);
         }
         return new Result(isNew, changed, outcome);
     }
