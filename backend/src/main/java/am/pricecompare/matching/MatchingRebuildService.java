@@ -47,8 +47,9 @@ public class MatchingRebuildService {
             // Remember one store product per canonical product used by shopping lists.
             Map<Long, Long> listRefs = new HashMap<>();
             jdbc.query("select distinct i.canonical_product_id, (select min(sp.id) from store_products sp "
-                            + "where sp.canonical_product_id = i.canonical_product_id) from shopping_list_items i "
-                            + "where i.canonical_product_id is not null",
+                            + "where sp.canonical_product_id = i.canonical_product_id) from "
+                            + "(select canonical_product_id from shopping_list_items where canonical_product_id is not null "
+                            + " union select canonical_product_id from price_watches) i",
                     rs -> {
                         long sp = rs.getLong(2);
                         if (!rs.wasNull()) {
@@ -96,8 +97,16 @@ public class MatchingRebuildService {
                 listRefs.forEach((oldCanonical, storeProductId) -> jdbc.update(
                         "update shopping_list_items set canonical_product_id = (select canonical_product_id from store_products where id = ?) "
                                 + "where canonical_product_id = ?", storeProductId, oldCanonical));
+                listRefs.forEach((oldCanonical, storeProductId) -> {
+                    String newCanonical = "(select canonical_product_id from store_products where id = ?)";
+                    jdbc.update("delete from price_watches w where w.canonical_product_id = ? and exists (select 1 from price_watches o "
+                            + "where o.id <> w.id and o.device_id = w.device_id and o.canonical_product_id = " + newCanonical + ")", oldCanonical, storeProductId);
+                    jdbc.update("update price_watches set canonical_product_id = " + newCanonical + " where canonical_product_id = ?",
+                            storeProductId, oldCanonical);
+                });
                 jdbc.update("delete from canonical_products c where not c.active and not exists "
                         + "(select 1 from shopping_list_items i where i.canonical_product_id = c.id) and not exists "
+                        + "(select 1 from price_watches w where w.canonical_product_id = c.id) and not exists "
                         + "(select 1 from store_products sp where sp.canonical_product_id = c.id)");
             });
             Integer canonical = jdbc.queryForObject("select count(*) from canonical_products where active", Integer.class);

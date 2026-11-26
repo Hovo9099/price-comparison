@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -49,6 +50,7 @@ public class CrawlerService {
     private final CrawlerProperties props;
     private final TransactionTemplate tx;
     private final LocationSyncService locationSync;
+    private final ApplicationEventPublisher events;
     private final ExecutorService executor = Executors.newCachedThreadPool(r -> {
         Thread t = new Thread(r, "crawler");
         t.setDaemon(true);
@@ -60,7 +62,7 @@ public class CrawlerService {
     public CrawlerService(List<SupermarketProvider> providerList, StoreRepository storeRepo, CrawlRunRepository runRepo,
                           CrawlErrorRepository errorRepo, StoreProductRepository storeProductRepo,
                           ProductIngestionService ingestion, CrawlerProperties props, TransactionTemplate tx,
-                          LocationSyncService locationSync) {
+                          LocationSyncService locationSync, ApplicationEventPublisher events) {
         this.providers = providerList.stream().collect(Collectors.toMap(SupermarketProvider::getStoreCode, Function.identity()));
         this.storeRepo = storeRepo;
         this.runRepo = runRepo;
@@ -70,6 +72,7 @@ public class CrawlerService {
         this.props = props;
         this.tx = tx;
         this.locationSync = locationSync;
+        this.events = events;
     }
 
     public List<SupermarketProvider> providers() {
@@ -199,6 +202,9 @@ public class CrawlerService {
             finish(runId, status, msg, ctx);
             log.info("Crawl {} for {} finished: {} (discovered={}, updated={}, prices={}, errors={})", runId, storeCode,
                     status, ctx.discovered.get(), ctx.updated.get(), ctx.pricesUpdated.get(), ctx.errors.get());
+            if (status != CrawlStatus.FAILED) {
+                publishFinished(new CrawlFinishedEvent(store.getId(), runId, status, ctx.pricesUpdated.get()));
+            }
         } catch (RuntimeException e) {
             log.error("Crawl {} for {} failed", runId, storeCode, e);
             if (ctx != null) {
@@ -208,6 +214,15 @@ public class CrawlerService {
         } finally {
             runningByStore.remove(storeCode, runId);
             cancelFlags.remove(runId);
+        }
+    }
+
+    /** Listeners (e.g. price-watch notifications) must never turn a finished crawl into a failed one. */
+    private void publishFinished(CrawlFinishedEvent event) {
+        try {
+            events.publishEvent(event);
+        } catch (RuntimeException e) {
+            log.warn("Crawl {}: post-crawl listener failed: {}", event.runId(), e.toString());
         }
     }
 

@@ -403,6 +403,12 @@ public class MatchingService {
             previous.setUpdatedAt(Instant.now());
             em.createQuery("update ShoppingListItem i set i.canonicalProduct = :target where i.canonicalProduct = :prev")
                     .setParameter("target", target).setParameter("prev", previous).executeUpdate();
+            // price watches follow the product; a device already watching the target keeps its own watch
+            em.createQuery("delete from PriceWatch w where w.canonicalProduct = :prev and exists "
+                            + "(select o.id from PriceWatch o where o.id <> w.id and o.device = w.device and o.canonicalProduct = :target)")
+                    .setParameter("target", target).setParameter("prev", previous).executeUpdate();
+            em.createQuery("update PriceWatch w set w.canonicalProduct = :target where w.canonicalProduct = :prev")
+                    .setParameter("target", target).setParameter("prev", previous).executeUpdate();
             em.createQuery("update ProductMatchCandidate c set c.status = :rejected, c.reviewedAt = :now "
                             + "where c.canonicalProduct = :prev and c.status = :pending")
                     .setParameter("rejected", MatchStatus.REJECTED).setParameter("now", Instant.now())
