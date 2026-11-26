@@ -1,0 +1,36 @@
+# PostgreSQL + backend. Secrets come from .env (copy .env.example to .env); nothing is hardcoded.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pricecompare}
+      POSTGRES_USER: ${POSTGRES_USER:-pricecompare}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-pricecompare}
+      DB_USERNAME: ${POSTGRES_USER:-pricecompare}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:?Set ADMIN_TOKEN in .env}
+      CRAWLER_MAX_PRODUCTS: ${CRAWLER_MAX_PRODUCTS:-0}
+      CRAWLER_SCHEDULE_CRON: ${CRAWLER_SCHEDULE_CRON:-}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+
+volumes:
+  pgdata:

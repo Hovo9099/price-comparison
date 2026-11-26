@@ -1,0 +1,4 @@
+{"success":true,"data":{"categories":null,"list":[
+{"id":900101,"name":"TEST Կաթ «Թեստ» 3.5% 1լ","photo":"https://media.test.invalid/1.png","price":1390.00,"discountedPrice":1090.0380,"discountPercent":21.58,"isKilogram":false,"categoryName":"Milk"},
+{"id":900102,"name":"TEST Պանիր կգ","photo":null,"price":28990.0,"discountedPrice":0,"discountPercent":0,"isKilogram":true,"categoryName":"Hard cheeses"}
+],"pageCount":3,"itemCount":250}}

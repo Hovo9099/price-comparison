@@ -1,0 +1,19 @@
+# secrets / local runtime
+.env
+.local/
+*.log
+
+# backend
+backend/target/
+*.iml
+.idea/
+
+# node
+node_modules/
+admin/dist/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/ios/
+mobile/android/
+.DS_Store

@@ -1,0 +1,11 @@
+crawler:
+  store-raw-snapshots: true
+  respect-robots-txt: false
+  min-delay-ms: 0
+  max-retries: 0
+app:
+  admin:
+    token: test-admin-token
+logging:
+  level:
+    am.pricecompare: WARN

@@ -1,0 +1,360 @@
+{
+  "_doc": [
+    "Grocery concepts recognised in shopping-list input. Extend freely: add aliases (Armenian, Armenian in Latin letters,",
+    "Russian, English, brands, misspellings). 'include' is a list of groups; a product must contain a word from EVERY group",
+    "(in its Armenian or English name). A trailing '*' means prefix. 'exclude' words reject a product (prefix match when",
+    "ending with '*'). 'requiresChoice' concepts (cheese, meat, chicken) are too broad to compare: the user picks a child.",
+    "defaultSize applies when the user gives no size; sizes are matched within +-10%. soldByWeight concepts are priced per kg."
+  ],
+  "concepts": [
+    {
+      "code": "milk", "nameHy": "Կաթ", "nameEn": "Milk", "nameRu": "Молоко", "category": "dairy",
+      "aliases": ["կաթ", "kat", "kath", "katy", "milk", "молоко", "moloko", "maloko"],
+      "include": [["կաթ", "milk", "молоко"]],
+      "exclude": ["կոկոս*", "coconut", "кокос*", "նուշ*", "almond*", "миндал*", "սոյա*", "soy*", "соев*", "վարսակ*", "oat*", "овсян*",
+        "բրնձ*", "rice", "шоколад*", "շոկոլադ*", "chocolate*", "խտացրած", "condensed", "сгущ*", "կոկտեյլ*", "cocktail*", "коктейл*",
+        "չոր", "powder*", "сухое", "կակաո*", "cocoa", "բանան*", "banana*", "ելակ*", "strawberr*", "վանիլ*", "vanill*", "մանկական*",
+        "baby", "детск*", "քաղցր*", "sweet*", "սերուցք*", "cream", "կոնֆետ*", "candy", "այծ*", "goat*", "коз*"],
+      "defaultSize": {"value": 1000, "unit": "ml"}, "sizes": [500, 900, 1000, 2000]
+    },
+    {
+      "code": "eggs", "nameHy": "Ձու", "nameEn": "Eggs", "nameRu": "Яйца", "category": "eggs",
+      "aliases": ["ձու", "ձվեր", "հավկիթ", "dzu", "dzvu", "dzuk", "dzver", "havkit", "havkith", "egg", "eggs", "яйца", "яйцо", "yayca", "yaica", "yaytsa"],
+      "include": [["ձու", "ձվեր", "հավկիթ", "egg", "eggs", "яйца", "яйцо"]],
+      "exclude": ["լոր*", "quail*", "перепел*", "շոկոլադ*", "chocolate*", "шоколад*", "kinder", "կինդեր*", "մակարոն*", "pasta", "noodle*",
+        "лапш*", "մայոնեզ*", "mayonnaise", "майонез*", "փոշի", "powder"],
+      "defaultSize": {"value": 10, "unit": "pcs"}, "sizes": [6, 10, 15, 20, 30]
+    },
+    {
+      "code": "cheese", "nameHy": "Պանիր", "nameEn": "Cheese", "nameRu": "Сыр", "category": "dairy",
+      "aliases": ["պանիր", "panir", "paner", "panyr", "cheese", "сыр", "syr", "sir"],
+      "requiresChoice": true,
+      "children": ["cheese-lori", "cheese-chanakh", "cheese-holland", "cheese-mozzarella", "cheese-processed", "cheese-feta"]
+    },
+    {
+      "code": "cheese-lori", "nameHy": "Պանիր Լոռի", "nameEn": "Lori cheese", "nameRu": "Сыр Лори", "category": "dairy",
+      "aliases": ["լոռի", "lori", "panir lori", "lori panir", "сыр лори", "lori cheese"],
+      "include": [["լոռի*", "lori", "лори"]], "exclude": ["չիպս*", "chips"], "soldByWeight": true
+    },
+    {
+      "code": "cheese-chanakh", "nameHy": "Պանիր Չանախ", "nameEn": "Chanakh cheese", "nameRu": "Сыр Чанах", "category": "dairy",
+      "aliases": ["չանախ", "chanakh", "chanax", "chanakh panir", "panir chanakh", "чанах", "сыр чанах"],
+      "include": [["չանախ*", "chanakh", "chanax", "чанах*"]], "soldByWeight": true
+    },
+    {
+      "code": "cheese-holland", "nameHy": "Պանիր Հոլանդական", "nameEn": "Holland (Dutch) cheese", "nameRu": "Сыр Голландский", "category": "dairy",
+      "aliases": ["հոլանդական", "holandakan", "hollandakan", "holland cheese", "dutch cheese", "голландский", "gollandskiy"],
+      "include": [["պանիր", "cheese", "сыр"], ["հոլանդ*", "holland*", "dutch", "голланд*"]], "soldByWeight": true
+    },
+    {
+      "code": "cheese-mozzarella", "nameHy": "Մոցարելլա", "nameEn": "Mozzarella", "nameRu": "Моцарелла", "category": "dairy",
+      "aliases": ["մոցարելլա", "մոցարելա", "mozzarella", "mocarella", "motsarella", "моцарелла"],
+      "include": [["մոցարել*", "mozzarel*", "моцарел*"]], "exclude": ["պիցցա*", "pizza", "пицц*", "չիպս*", "sticks", "ձողիկ*"]
+    },
+    {
+      "code": "cheese-processed", "nameHy": "Հալած պանիր", "nameEn": "Processed cheese", "nameRu": "Плавленый сыр", "category": "dairy",
+      "aliases": ["հալած պանիր", "halac panir", "halats panir", "processed cheese", "плавленый сыр", "plavlenyy syr"],
+      "include": [["պանիր", "cheese", "сыр"], ["հալած*", "processed", "плавлен*"]]
+    },
+    {
+      "code": "cheese-feta", "nameHy": "Ֆետա", "nameEn": "Feta", "nameRu": "Фета", "category": "dairy",
+      "aliases": ["ֆետա", "feta", "фета", "fetaksa"],
+      "include": [["ֆետա*", "feta*", "фета*"]]
+    },
+    {
+      "code": "butter", "nameHy": "Կարագ", "nameEn": "Butter", "nameRu": "Сливочное масло", "category": "dairy",
+      "aliases": ["կարագ", "karag", "karak", "karaq", "butter", "сливочное масло", "масло сливочное", "slivochnoe maslo", "maslo slivochnoe"],
+      "include": [["կարագ*", "butter", "сливочн*"]],
+      "exclude": ["մարգարին*", "margarin*", "маргарин*", "սպրեդ*", "spread*", "спред*", "խառնուրդ*", "blend", "смес*", "կակաո*", "cocoa",
+        "գետնանուշ*", "peanut*", "арахис*", "թխվածք*", "cookie*", "biscuit*", "печень*", "կրուասան*", "croissant*", "կարամել*", "popcorn",
+        "չիպս*", "chips", "շոկոլադ*", "chocolate*", "փոփքորն*", "սոուս*", "sauce", "կաթնաշոռ*", "сыр", "փաթիլ*"],
+      "defaultSize": {"value": 200, "unit": "g"}, "sizes": [180, 200, 400, 500]
+    },
+    {
+      "code": "margarine", "nameHy": "Մարգարին", "nameEn": "Margarine", "nameRu": "Маргарин", "category": "dairy",
+      "aliases": ["մարգարին", "margarin", "margarine", "маргарин", "spread", "спред"],
+      "include": [["մարգարին*", "margarin*", "маргарин*", "սպրեդ*", "spread*", "спред*"]]
+    },
+    {
+      "code": "bread", "nameHy": "Հաց", "nameEn": "Bread", "nameRu": "Хлеб", "category": "bread",
+      "aliases": ["հաց", "hac", "hats", "hatz", "xac", "khats", "bread", "хлеб", "xleb", "hleb", "khleb"],
+      "include": [["հաց", "bread", "хлеб"]],
+      "exclude": ["չորահաց*", "crisp*", "хлебц*", "բուրգեր*", "burger*", "бургер*", "հոթ", "hot", "dog", "хот", "փշրանք*", "crumb*", "сухар*",
+        "ձողիկ*", "stick*", "палоч*", "պաքսիմատ*", "crouton*", "գինի*", "kvass", "кваc*", "կվաս*", "հացաման*", "box", "boxes", "bin", "basket*", "хлебниц*"]
+    },
+    {
+      "code": "lavash", "nameHy": "Լավաշ", "nameEn": "Lavash", "nameRu": "Лаваш", "category": "bread",
+      "aliases": ["լավաշ", "lavash", "lavas", "lawash", "лаваш"],
+      "include": [["լավաշ*", "lavash", "лаваш*"]], "exclude": ["չիպս*", "chips", "чипс*"]
+    },
+    {
+      "code": "sugar", "nameHy": "Շաքարավազ", "nameEn": "Sugar", "nameRu": "Сахар", "category": "pantry",
+      "aliases": ["շաքար", "շաքարավազ", "shakar", "shaqar", "shakaravaz", "shaqaravaz", "sugar", "сахар", "saxar", "sahar", "sakhar"],
+      "include": [["շաքարավազ", "շաքար", "sugar", "сахар"]],
+      "exclude": ["պուդրա*", "powder*", "icing", "пудр*", "վանիլ*", "vanill*", "ванил*", "դարչին*", "cinnamon", "եղեգ*", "cane", "brown",
+        "тростник*", "коричнев*", "առանց", "without", "free", "без", "փոխարին*", "substitute", "заменит*", "ստևիա*", "stevia", "стеви*",
+        "կոնֆետ*", "candy", "մաստակ*", "gum", "վաֆլի*", "wafer*", "թխվածքաբլիթ*", "cookie*", "рафинад*", "կտոր*", "cube*"],
+      "defaultSize": {"value": 1000, "unit": "g"}, "sizes": [1000, 2000, 5000]
+    },
+    {
+      "code": "oil", "nameHy": "Ձեթ (արևածաղկի)", "nameEn": "Sunflower oil", "nameRu": "Подсолнечное масло", "category": "pantry",
+      "aliases": ["ձեթ", "dzet", "dzeth", "dzit", "dzhet", "dzeyt", "oil", "sunflower oil", "подсолнечное масло", "podsolnechnoe maslo", "масло подсолнечное"],
+      "include": [["ձեթ*", "oil", "масло"], ["արևածաղկ*", "sunflower*", "подсолн*"]],
+      "exclude": ["ձիթապտղ*", "olive*", "олив*", "սփրեյ*", "spray", "спрей*", "չիպս*", "chips", "սերմ*", "seed*", "семечк*"],
+      "defaultSize": {"value": 1000, "unit": "ml"}, "sizes": [500, 1000, 2000, 5000],
+      "alternatives": ["oil-olive"]
+    },
+    {
+      "code": "oil-olive", "nameHy": "Ձիթապտղի յուղ", "nameEn": "Olive oil", "nameRu": "Оливковое масло", "category": "pantry",
+      "aliases": ["ձիթապտղի յուղ", "ձիթապտղի ձեթ", "olive oil", "dzitaptghi yugh", "оливковое масло", "olivkovoe maslo"],
+      "include": [["ձիթապտղ*", "olive*", "олив*"], ["յուղ", "ձեթ*", "oil", "масло"]],
+      "exclude": ["ձիթապտուղ", "olives", "оливки", "սոուս*", "sauce", "spray", "սփրեյ*"],
+      "defaultSize": {"value": 500, "unit": "ml"}, "sizes": [250, 500, 750, 1000]
+    },
+    {
+      "code": "butter-or-oil", "nameHy": "Կարագ կամ ձեթ", "nameEn": "Butter or oil", "nameRu": "Масло", "category": "dairy",
+      "aliases": ["масло", "maslo", "յուղ", "yugh", "yux", "yug"],
+      "requiresChoice": true, "children": ["butter", "oil", "oil-olive"]
+    },
+    {
+      "code": "meat", "nameHy": "Միս", "nameEn": "Meat", "nameRu": "Мясо", "category": "meat",
+      "aliases": ["միս", "mis", "meat", "мясо", "myaso", "miaso"],
+      "requiresChoice": true, "children": ["beef", "pork", "lamb", "minced-meat"]
+    },
+    {
+      "code": "beef", "nameHy": "Տավարի միս", "nameEn": "Beef", "nameRu": "Говядина", "category": "meat",
+      "aliases": ["տավարի միս", "տավար", "tavari mis", "tavar", "beef", "говядина", "govyadina"],
+      "include": [["տավար*", "beef", "говяд*"]],
+      "exclude": ["երշիկ*", "sausage*", "колбас*", "բաստուրմա*", "basturma", "պահածո*", "canned", "тушен*", "ապխտ*", "smoked", "копчен*",
+        "չիպս*", "chips", "կծու", "jerky", "արգանակ*", "broth", "бульон*", "կոտլետ*", "cutlet*", "котлет*", "ֆարշ", "աղացած*", "minced", "фарш*",
+        "pet", "կատու*", "շան", "dog", "cat", "собак*", "кошек"],
+      "soldByWeight": true
+    },
+    {
+      "code": "pork", "nameHy": "Խոզի միս", "nameEn": "Pork", "nameRu": "Свинина", "category": "meat",
+      "aliases": ["խոզի միս", "խոզ", "khozi mis", "xozi mis", "khoz", "pork", "свинина", "svinina"],
+      "include": [["խոզ*", "pork", "свин*"]],
+      "exclude": ["երշիկ*", "sausage*", "колбас*", "պահածո*", "canned", "тушен*", "ապխտ*", "smoked", "копчен*", "բեկոն*", "bacon", "бекон*",
+        "ճարպ*", "lard", "сало", "չիպս*", "chips", "աղացած*", "minced", "фарш*", "կոտլետ*", "ветчин*", "ham", "խոզապուխտ*"],
+      "soldByWeight": true
+    },
+    {
+      "code": "lamb", "nameHy": "Գառան միս", "nameEn": "Lamb", "nameRu": "Баранина", "category": "meat",
+      "aliases": ["գառան միս", "ոչխարի միս", "garan mis", "vochkhari mis", "lamb", "mutton", "баранина", "baranina"],
+      "include": [["գառ*", "ոչխար*", "lamb", "mutton", "баран*"]],
+      "exclude": ["պահածո*", "canned", "тушен*", "երշիկ*", "sausage*"], "soldByWeight": true
+    },
+    {
+      "code": "minced-meat", "nameHy": "Աղացած միս", "nameEn": "Minced meat", "nameRu": "Фарш", "category": "meat",
+      "aliases": ["աղացած միս", "aghacac mis", "aghatsats mis", "farsh", "фарш", "minced meat", "mince"],
+      "include": [["աղացած*", "minced", "mince", "фарш*"]],
+      "exclude": ["ձուկ*", "fish", "рыб*", "սունկ*", "mushroom*", "կոտլետ*", "cutlet*", "котлет*", "պելմեն*", "dumpling*"], "soldByWeight": true
+    },
+    {
+      "code": "chicken", "nameHy": "Հավ", "nameEn": "Chicken", "nameRu": "Курица", "category": "meat",
+      "aliases": ["հավ", "hav", "haw", "chicken", "курица", "kurica", "kuritsa"],
+      "requiresChoice": true, "children": ["chicken-whole", "chicken-breast", "chicken-thigh", "chicken-wings"]
+    },
+    {
+      "code": "chicken-whole", "nameHy": "Հավ ամբողջական", "nameEn": "Whole chicken", "nameRu": "Курица целая", "category": "meat",
+      "aliases": ["հավ ամբողջական", "ամբողջական հավ", "hav ambox", "whole chicken", "broiler", "бройлер", "тушка курицы", "целая курица"],
+      "include": [["հավ*", "chicken", "куриц*", "բրոյլեր*", "broiler*", "бройлер*"], ["ամբողջ*", "whole", "тушк*", "цел*", "բրոյլեր*", "broiler*", "бройлер*"]],
+      "exclude": ["կրծք*", "breast*", "грудк*", "ազդր*", "thigh*", "бедр*", "թև*", "wing*", "крыл*", "սրունք*", "drumstick*", "голен*",
+        "ֆիլե*", "fillet*", "филе*", "ապխտ*", "smoked", "копчен*", "խորոված*", "grilled", "гриль", "երշիկ*", "sausage*"],
+      "soldByWeight": true
+    },
+    {
+      "code": "chicken-breast", "nameHy": "Հավի կրծքամիս", "nameEn": "Chicken breast", "nameRu": "Куриная грудка", "category": "meat",
+      "aliases": ["հավի կրծքամիս", "կրծքամիս", "hav krcqamis", "krtsqamis", "krcqamis", "chicken breast", "chicken fillet", "куриная грудка", "грудка", "филе куриное"],
+      "include": [["հավ*", "chicken", "куриц*", "курин*"], ["կրծք*", "breast*", "грудк*", "ֆիլե*", "fillet*", "филе*"]],
+      "exclude": ["ապխտ*", "smoked", "копчен*", "երշիկ*", "sausage*", "колбас*", "նագեթս*", "nugget*", "наггетс*", "պանրուկ*", "ռուլետ*",
+        "roll*", "рулет*", "կոտլետ*", "cutlet*", "котлет*", "pet", "կատու*", "շան", "dog", "cat"],
+      "soldByWeight": true
+    },
+    {
+      "code": "chicken-thigh", "nameHy": "Հավի ազդր / բուդ", "nameEn": "Chicken thighs / legs", "nameRu": "Куриные бедра / окорочка", "category": "meat",
+      "aliases": ["հավի ազդր", "հավի բուդ", "hav azdr", "hav bud", "chicken thigh", "chicken legs", "бедро куриное", "окорочка", "голень"],
+      "include": [["հավ*", "chicken", "куриц*", "курин*"], ["ազդր*", "բուդ*", "բդ*", "thigh*", "leg*", "бедр*", "окороч*", "սրունք*", "drumstick*", "голен*"]],
+      "exclude": ["ապխտ*", "smoked", "копчен*", "խորոված*", "grilled"], "soldByWeight": true
+    },
+    {
+      "code": "chicken-wings", "nameHy": "Հավի թևեր", "nameEn": "Chicken wings", "nameRu": "Куриные крылья", "category": "meat",
+      "aliases": ["հավի թև", "հավի թևեր", "hav tev", "chicken wings", "крылья", "куриные крылья"],
+      "include": [["հավ*", "chicken", "куриц*", "курин*"], ["թև*", "wing*", "крыл*"]],
+      "exclude": ["ապխտ*", "smoked", "копчен*", "սոուս*", "sauce"], "soldByWeight": true
+    },
+    {
+      "code": "yogurt", "nameHy": "Յոգուրտ", "nameEn": "Yogurt", "nameRu": "Йогурт", "category": "dairy",
+      "aliases": ["յոգուրտ", "yogurt", "yoghurt", "yogurt", "iogurt", "yougurt", "йогурт", "yogurt"],
+      "include": [["յոգուրտ*", "yogurt*", "yoghurt*", "йогурт*"]],
+      "exclude": ["շոկոլադ*", "chocolate*", "глазур*", "դեսերտ*", "dessert", "կոնֆետ*", "candy", "չիր*", "dried", "փաթիլ*", "flakes"]
+    },
+    {
+      "code": "coca-cola", "nameHy": "Կոկա-Կոլա", "nameEn": "Coca-Cola", "nameRu": "Кока-Кола", "category": "drinks",
+      "aliases": ["coca cola", "coca-cola", "cocacola", "coke", "koka kola", "kola", "cola", "кока кола", "кока-кола", "кола", "կոկա կոլա", "կոկա-կոլա", "կոլա"],
+      "include": [["կոկա*", "koka*", "coca*", "кока*"], ["կոլա*", "kola", "cola", "кола"]],
+      "exclude": ["zero", "զերո", "զիրո", "зеро", "light", "լայթ", "лайт", "diet", "դիետ*", "без", "առանց", "sugar", "free", "վանիլ*", "vanill*",
+        "ванил*", "cherry", "բալ*", "вишн*", "lemon", "կիտրոն*", "лимон*", "սուրճ*", "coffee", "кофе"],
+      "defaultSize": {"value": 1500, "unit": "ml"}, "sizes": [330, 500, 1000, 1500, 2000]
+    },
+    {
+      "code": "coca-cola-zero", "nameHy": "Կոկա-Կոլա Զերո", "nameEn": "Coca-Cola Zero", "nameRu": "Кока-Кола Зеро", "category": "drinks",
+      "aliases": ["coca cola zero", "coke zero", "cola zero", "koka kola zero", "кока кола зеро", "кола зеро", "կոկա կոլա զերո", "coca cola sugar free"],
+      "include": [["կոկա*", "koka*", "coca*", "кока*"], ["կոլա*", "kola", "cola", "кола"], ["zero", "զերո", "զիրո", "зеро"]],
+      "exclude": ["վանիլ*", "vanill*", "cherry", "բալ*", "lemon", "կիտրոն*"],
+      "defaultSize": {"value": 1500, "unit": "ml"}, "sizes": [330, 500, 1000, 1500, 2000]
+    },
+    {
+      "code": "potatoes", "nameHy": "Կարտոֆիլ", "nameEn": "Potatoes", "nameRu": "Картофель", "category": "produce",
+      "aliases": ["կարտոֆիլ", "kartofil", "kartofel", "kartopil", "kartoshka", "potato", "potatoes", "картофель", "картошка"],
+      "include": [["կարտոֆիլ*", "potato*", "картоф*"]],
+      "exclude": ["չիպս*", "chips", "чипс*", "ֆրի", "fries", "фри", "պյուրե*", "puree", "пюре", "սառեցված*", "frozen", "заморож*", "ալյուր*",
+        "flour", "крахмал*", "օսլա*", "starch", "քաղցր*", "sweet", "батат*", "բատատ*", "ձողիկ*", "sticks", "կոտլետ*", "պելմեն*"],
+      "soldByWeight": true
+    },
+    {
+      "code": "tomatoes", "nameHy": "Լոլիկ", "nameEn": "Tomatoes", "nameRu": "Помидоры", "category": "produce",
+      "aliases": ["լոլիկ", "պոմիդոր", "pomidor", "pamidor", "lolik", "tomato", "tomatoes", "помидор", "помидоры"],
+      "include": [["լոլիկ*", "պոմիդոր*", "tomato*", "помидор*"]],
+      "exclude": ["մածուկ*", "paste", "паста", "սոուս*", "sauce*", "соус*", "կետչուպ*", "ketchup", "кетчуп*", "հյութ*", "juice", "сок*",
+        "պահածո*", "canned", "консерв*", "չորաց*", "dried", "вял*", "թթու*", "pickled", "маринов*", "солен*", "չիպս*", "chips", "սերմ*", "seed*"],
+      "soldByWeight": true
+    },
+    {
+      "code": "cucumbers", "nameHy": "Վարունգ", "nameEn": "Cucumbers", "nameRu": "Огурцы", "category": "produce",
+      "aliases": ["վարունգ", "varung", "varunk", "cucumber", "cucumbers", "огурец", "огурцы", "ogurec", "ogurtsy"],
+      "include": [["վարունգ*", "cucumber*", "огур*"]],
+      "exclude": ["թթու*", "pickled", "маринов*", "солен*", "պահածո*", "canned", "կրեմ*", "cream", "լոսյոն*", "mask*", "շամպուն*"],
+      "soldByWeight": true
+    },
+    {
+      "code": "onions", "nameHy": "Սոխ", "nameEn": "Onions", "nameRu": "Лук", "category": "produce",
+      "aliases": ["սոխ", "sokh", "sox", "onion", "onions", "лук", "luk"],
+      "include": [["սոխ*", "onion*", "лук*"]],
+      "exclude": ["չիպս*", "chips", "чипс*", "կանաչ*", "green", "зелен*", "չորաց*", "dried", "սոուս*", "sauce", "սխտոր*", "garlic", "чеснок*", "կրեկեր*", "crackers"],
+      "soldByWeight": true
+    },
+    {
+      "code": "apples", "nameHy": "Խնձոր", "nameEn": "Apples", "nameRu": "Яблоки", "category": "produce",
+      "aliases": ["խնձոր", "khndzor", "xndzor", "khndzor", "apple", "apples", "яблоко", "яблоки", "yabloki"],
+      "include": [["խնձոր*", "apple*", "яблок*"]],
+      "exclude": ["հյութ*", "juice", "сок*", "չիպս*", "chips", "чипс*", "չիր*", "dried", "сушен*", "պյուրե*", "puree", "пюре", "քացախ*", "vinegar", "уксус*",
+        "ջեմ*", "jam", "джем*", "շամպուն*", "shampoo", "կարկանդակ*", "pie", "пирог*", "սիդր*", "cider", "մուրաբա*"],
+      "soldByWeight": true
+    },
+    {
+      "code": "bananas", "nameHy": "Բանան", "nameEn": "Bananas", "nameRu": "Бананы", "category": "produce",
+      "aliases": ["բանան", "banan", "banana", "bananas", "банан", "бананы"],
+      "include": [["բանան*", "banana*", "банан*"]],
+      "exclude": ["չիպս*", "chips", "чипс*", "հյութ*", "juice", "сок*", "յոգուրտ*", "yogurt*", "йогурт*", "մածուն*", "կաթ", "milk", "молоко",
+        "շոկոլադ*", "chocolate*", "կոկտեյլ*", "cocktail*", "պյուրե*", "puree", "չիր*", "dried", "մանկական*", "baby"],
+      "soldByWeight": true
+    },
+    {
+      "code": "rice", "nameHy": "Բրինձ", "nameEn": "Rice", "nameRu": "Рис", "category": "grains",
+      "aliases": ["բրինձ", "brindz", "brinc", "brinz", "rice", "рис", "ris"],
+      "include": [["բրինձ*", "rice", "рис"]],
+      "exclude": ["թերթիկ*", "paper", "бумаг*", "ալյուր*", "flour", "мука", "կաթ", "milk", "կրեկեր*", "cracker*", "крекер*", "չորահաց*", "crisp*",
+        "хлебц*", "պուդինգ*", "pudding", "չիպս*", "chips", "կոտլետ*", "cutlet*", "քացախ*", "vinegar", "լապշա*", "noodle*", "лапш*", "փաթիլ*", "flakes", "хлопья"],
+      "defaultSize": {"value": 1000, "unit": "g"}, "sizes": [500, 900, 1000, 2000]
+    },
+    {
+      "code": "buckwheat", "nameHy": "Հնդկաձավար", "nameEn": "Buckwheat", "nameRu": "Гречка", "category": "grains",
+      "aliases": ["հնդկաձավար", "hndkadzavar", "hndkatsavar", "grechka", "grecka", "buckwheat", "гречка", "гречневая"],
+      "include": [["հնդկաձավար*", "buckwheat", "греч*"]],
+      "exclude": ["ալյուր*", "flour", "мука", "փաթիլ*", "flakes", "хлопья", "չորահաց*", "crisp*", "хлебц*", "լապշա*", "noodle*", "лапш*"],
+      "defaultSize": {"value": 1000, "unit": "g"}, "sizes": [800, 900, 1000]
+    },
+    {
+      "code": "pasta", "nameHy": "Մակարոն", "nameEn": "Pasta", "nameRu": "Макароны", "category": "grains",
+      "aliases": ["մակարոն", "makaron", "macaron", "makarony", "pasta", "макароны", "spaghetti", "սպագետի", "спагетти"],
+      "include": [["մակարոն*", "pasta", "макарон*", "սպագետի*", "spaghetti", "спагетти"]],
+      "exclude": ["սոուս*", "sauce*", "соус*", "պանիր", "cheese", "սալաթ*", "salad", "պատրաստի", "ready", "готов*", "macaron", "մակարուն*"],
+      "defaultSize": {"value": 500, "unit": "g"}, "sizes": [400, 450, 500, 1000]
+    },
+    {
+      "code": "flour", "nameHy": "Ալյուր", "nameEn": "Flour", "nameRu": "Мука", "category": "pantry",
+      "aliases": ["ալյուր", "alyur", "aliur", "alur", "flour", "мука", "muka"],
+      "include": [["ալյուր*", "flour", "мука"]],
+      "exclude": ["բրնձ*", "rice", "рис*", "եգիպտացորեն*", "corn", "кукуруз*", "վարսակ*", "oat*", "овсян*", "հնդկաձավար*", "buckwheat", "греч*",
+        "նուշ*", "almond*", "миндал*", "կոկոս*", "coconut", "кокос*", "ամբողջահատիկ*", "whole", "цельнозерн*", "խմոր*", "dough", "тесто",
+        "ցորենի*", "rye", "ржан*", "տարեկան*"],
+      "defaultSize": {"value": 1000, "unit": "g"}, "sizes": [1000, 2000, 5000]
+    },
+    {
+      "code": "salt", "nameHy": "Աղ", "nameEn": "Salt", "nameRu": "Соль", "category": "pantry",
+      "aliases": ["աղ", "agh", "ax", "salt", "соль", "sol"],
+      "include": [["աղ", "salt", "соль"]],
+      "exclude": ["չիպս*", "chips", "чипс*", "ընկույզ*", "nuts", "орех*", "գետնանուշ*", "peanut*", "крекер*", "cracker*", "կրեկեր*", "սերմ*", "seed*",
+        "семечк*", "pretzel*", "ձողիկ*", "sticks", "ձուկ*", "fish", "рыб*", "կարամել*", "caramel*", "լոգանք*", "bath", "ванн*", "պանիր", "cheese"],
+      "defaultSize": {"value": 1000, "unit": "g"}, "sizes": [500, 1000]
+    },
+    {
+      "code": "tea", "nameHy": "Թեյ", "nameEn": "Tea", "nameRu": "Чай", "category": "coffee-tea",
+      "aliases": ["թեյ", "tey", "tei", "tej", "chay", "chai", "tea", "чай"],
+      "include": [["թեյ*", "tea", "чай"]],
+      "exclude": ["թեյնիկ*", "kettle", "чайник*", "բաժակ*", "cup", "чашк*", "սառը", "ice", "iced", "холодн*"]
+    },
+    {
+      "code": "coffee", "nameHy": "Սուրճ", "nameEn": "Coffee", "nameRu": "Кофе", "category": "coffee-tea",
+      "aliases": ["սուրճ", "surj", "surch", "surtch", "coffee", "кофе", "kofe"],
+      "include": [["սուրճ*", "coffee", "кофе"]],
+      "exclude": ["կոնֆետ*", "candy", "конфет*", "սառը", "iced", "cold", "холодн*", "կոլա*", "cola", "лик*", "liqueur*", "լիկյոր*", "շոկոլադ*",
+        "chocolate*", "բաժակ*", "cup*", "чашк*", "եփող*", "maker", "машин*", "сливки", "սերուցք*", "creamer"]
+    },
+    {
+      "code": "water", "nameHy": "Ջուր", "nameEn": "Water", "nameRu": "Вода", "category": "drinks",
+      "aliases": ["ջուր", "jur", "djur", "dzhur", "water", "вода", "voda"],
+      "include": [["ջուր*", "water", "вода"]],
+      "exclude": ["օճառ*", "soap", "мыл*", "միցելյար*", "micellar", "мицелляр*", "զուգարան*", "toilet", "կոկոս*", "coconut", "кокос*",
+        "տոնիկ*", "tonic", "тоник*", "վարդ*", "rose", "роз*", "կոսմետիկ*", "մանկական*", "baby", "детск*", "լոսյոն*", "lotion"],
+      "defaultSize": {"value": 1500, "unit": "ml"}, "sizes": [500, 1000, 1500, 5000]
+    },
+    {
+      "code": "matsun", "nameHy": "Մածուն", "nameEn": "Matsun", "nameRu": "Мацун", "category": "dairy",
+      "aliases": ["մածուն", "matsun", "macun", "madzun", "matzun", "matsoni", "мацун", "мацони"],
+      "include": [["մածուն*", "matsun*", "matzun*", "macun*", "мацун*", "мацони*"]],
+      "exclude": ["չորացրած", "dried", "սոուս*", "sauce"],
+      "defaultSize": {"value": 500, "unit": "g"}, "sizes": [250, 450, 500, 1000]
+    },
+    {
+      "code": "sour-cream", "nameHy": "Թթվասեր", "nameEn": "Sour cream", "nameRu": "Сметана", "category": "dairy",
+      "aliases": ["թթվասեր", "ttvaser", "tvaser", "tttvaser", "sour cream", "сметана", "smetana"],
+      "include": [["թթվասեր*", "sour", "сметан*"]],
+      "exclude": ["չիպս*", "chips", "чипс*", "սոուս*", "sauce", "соус*", "կրեկեր*", "cracker*"]
+    },
+    {
+      "code": "cottage-cheese", "nameHy": "Կաթնաշոռ", "nameEn": "Cottage cheese", "nameRu": "Творог", "category": "dairy",
+      "aliases": ["կաթնաշոռ", "katnashor", "katnashor", "cottage cheese", "творог", "tvorog"],
+      "include": [["կաթնաշոռ", "cottage", "творог"]],
+      "exclude": ["դեսերտ*", "dessert*", "десерт*", "սիրկի*", "сырок*", "glazed", "глазир*", "շոկոլադ*", "chocolate*", "զանգված*", "mass", "масса"]
+    },
+    {
+      "code": "kefir", "nameHy": "Կեֆիր", "nameEn": "Kefir", "nameRu": "Кефир", "category": "dairy",
+      "aliases": ["կեֆիր", "kefir", "кефир"],
+      "include": [["կեֆիր*", "kefir*", "кефир*"]],
+      "defaultSize": {"value": 1000, "unit": "ml"}, "sizes": [500, 900, 1000]
+    },
+    {
+      "code": "tan", "nameHy": "Թան", "nameEn": "Tan (ayran)", "nameRu": "Тан / айран", "category": "dairy",
+      "aliases": ["թան", "tan", "than", "ayran", "айран", "тан"],
+      "include": [["թան", "tan", "ayran", "айран*", "тан"]],
+      "exclude": ["տանձ*", "pear*"],
+      "defaultSize": {"value": 1000, "unit": "ml"}, "sizes": [500, 1000, 1500]
+    },
+    {
+      "code": "honey", "nameHy": "Մեղր", "nameEn": "Honey", "nameRu": "Мёд", "category": "pantry",
+      "aliases": ["մեղր", "meghr", "mexr", "megr", "honey", "мёд", "мед", "med"],
+      "include": [["մեղր*", "honey", "мёд", "мед"]],
+      "exclude": ["թխվածքաբլիթ*", "cookie*", "biscuit*", "փաթիլ*", "flakes", "կոնֆետ*", "candy", "շամպուն*", "shampoo", "կրեմ*", "cream", "օճառ*",
+        "soap", "մեղրաբլիթ*", "honey cake", "медовик*", "գարեջուր*", "beer", "օղի*", "vodka", "կարկանդակ*", "мыл*", "wafer*", "վաֆլի*",
+        "սոուս*", "sauce", "мюсли", "մյուսլի*", "muesli"]
+    },
+    {
+      "code": "sausage", "nameHy": "Երշիկ", "nameEn": "Sausage", "nameRu": "Колбаса", "category": "meat",
+      "aliases": ["երշիկ", "ershik", "yershik", "sausage", "колбаса", "kolbasa"],
+      "include": [["երշիկ*", "sausage*", "колбас*"]],
+      "exclude": ["նրբերշիկ*", "frankfurter*", "сосиск*", "pet", "dog", "cat", "կատու*", "շան"]
+    }
+  ]
+}

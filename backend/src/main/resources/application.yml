@@ -1,0 +1,87 @@
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json
+
+spring:
+  application:
+    name: where-is-it-cheapest
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/pricecompare}
+    username: ${DB_USERNAME:pricecompare}
+    password: ${DB_PASSWORD:}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:12}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+          batch_size: 50
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+app:
+  admin:
+    # Required for /api/admin/** when set. When empty, admin endpoints only accept requests from localhost.
+    token: ${ADMIN_TOKEN:}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8081,http://localhost:19006}
+
+crawler:
+  # 0 = unlimited (full catalog import). Use e.g. 100 for development.
+  max-products: ${CRAWLER_MAX_PRODUCTS:0}
+  min-delay-ms: ${CRAWLER_MIN_DELAY_MS:700}
+  max-retries: 3
+  respect-robots-txt: true
+  store-raw-snapshots: true
+  deactivate-missing: true
+  # e.g. "0 0 5 * * *" to crawl every store daily at 05:00; empty disables scheduling
+  schedule-cron: ${CRAWLER_SCHEDULE_CRON:}
+  providers:
+    sas:
+      enabled: true
+      detail-pages: ${CRAWLER_SAS_DETAIL_PAGES:MISSING}
+      fetch-english-names: true
+    yerevan-city:
+      enabled: true
+      detail-pages: ${CRAWLER_YC_DETAIL_PAGES:MISSING}
+      fetch-english-names: true
+      min-delay-ms: 350
+    supermarket-am:
+      enabled: true
+      fetch-english-names: false
+    carrefour:
+      enabled: true
+      detail-pages: ALL
+      fetch-english-names: false
+    parma:
+      enabled: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    am.pricecompare: INFO
+    org.hibernate.SQL: WARN
