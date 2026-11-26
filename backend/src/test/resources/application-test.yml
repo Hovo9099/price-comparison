@@ -4,6 +4,8 @@ crawler:
   min-delay-ms: 0
   max-retries: 0
 app:
+  rate-limit:
+    per-minute: 0
   admin:
     token: test-admin-token
 logging:

@@ -1,0 +1,33 @@
+# HTTPS reverse proxy: certificates from Let's Encrypt are obtained and renewed automatically for {$DOMAIN}.
+# /api/** and health -> backend; everything else -> the admin web app (static files).
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		X-Frame-Options "DENY"
+		-Server
+	}
+
+	@backend path /api/* /actuator/health /v3/api-docs* /swagger-ui*
+	handle @backend {
+		reverse_proxy backend:8080
+	}
+
+	handle {
+		root * /srv/admin
+		try_files {path} /index.html
+		file_server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

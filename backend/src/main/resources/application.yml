@@ -1,5 +1,7 @@
 server:
   port: ${SERVER_PORT:8080}
+  # behind a reverse proxy (deploy/): "native" trusts X-Forwarded-* from private-network proxies only
+  forward-headers-strategy: ${SERVER_FORWARD_HEADERS_STRATEGY:none}
   compression:
     enabled: true
     mime-types: application/json
@@ -47,6 +49,9 @@ app:
     telegram-chat-id: ${ALERT_TELEGRAM_CHAT_ID:}
     webhook-url: ${ALERT_WEBHOOK_URL:}
     stale-hours: ${ALERT_STALE_HOURS:36}
+  rate-limit:
+    # public API requests per minute per client IP (bursts up to the same number); 0 = off
+    per-minute: ${RATE_LIMIT_PER_MINUTE:240}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:8081,http://localhost:19006}
 

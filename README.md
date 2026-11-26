@@ -166,6 +166,12 @@ Results (Cheapest / Mid-range / Premium tabs), Preferences, Home (search, catego
 (cheapest price, store comparison with "updated X ago", add to list, price-history chart), Price comparison,
 Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Deals tab (real vs questionable discounts), Nearby stores (Home → 📍; branches crawled from Yerevan City or entered in Admin → Store branches), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
 
+## Production
+
+HTTPS (Caddy + Let's Encrypt), admin app on the same domain, per-IP rate limiting, HTTP caching and daily database
+backups: `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build` — see
+[docs/deployment.md](docs/deployment.md).
+
 ## 8. Run tests
 
 ```bash

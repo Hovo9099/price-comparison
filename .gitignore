@@ -17,3 +17,6 @@ mobile/web-build/
 mobile/ios/
 mobile/android/
 .DS_Store
+
+# production database backups
+backups/
