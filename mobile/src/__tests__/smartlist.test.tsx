@@ -61,10 +61,10 @@ const comparison: Comparison = {
 };
 
 const Stack = createNativeStackNavigator();
-function renderScreen(component: React.ComponentType) {
+async function renderScreen(component: React.ComponentType) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity }, mutations: { gcTime: Infinity } } });
   const metrics = { frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } };
-  return render(
+  return await render(
     <SafeAreaProvider initialMetrics={metrics}>
       <QueryClientProvider client={qc}>
         <I18nProvider>
@@ -91,26 +91,26 @@ beforeEach(() => {
 });
 
 test('smart list sends free text, shows recognised items, sizes and type choices', async () => {
-  renderScreen(SmartListScreen);
+  await renderScreen(SmartListScreen);
   expect(await screen.findByText('Կաթ')).toBeTruthy();
   expect(screen.getByText('սկսած 700 ֏')).toBeTruthy();
   expect(screen.getByText('2 լ')).toBeTruthy(); // size chips from the concept
   // cheese needs a type: choosing one patches the item
-  fireEvent.press(await screen.findByText('Պանիր Լոռի'));
+  await fireEvent.press(await screen.findByText('Պանիր Լոռի'));
   await waitFor(() => expect(mocked.patchItem).toHaveBeenCalledWith(3, 2, { conceptCode: 'cheese-lori' }));
   // typing several products and adding sends one parse request
-  fireEvent.changeText(screen.getByPlaceholderText(/kat, dzu 10/), 'kat, dzu, panir');
-  fireEvent.press(screen.getByText('Ավելացնել'));
+  await fireEvent.changeText(screen.getByPlaceholderText(/kat, dzu 10/), 'kat, dzu, panir');
+  await fireEvent.press(screen.getByText('Ավելացնել'));
   await waitFor(() => expect(mocked.parseInto).toHaveBeenCalledWith(3, 'kat, dzu, panir'));
 });
 
 test('results show three strategies with totals, reasons and excluded items', async () => {
-  renderScreen(ResultsScreen);
+  await renderScreen(ResultsScreen);
   expect(await screen.findByText('Ամենաէժան')).toBeTruthy();
   expect(screen.getByText('Միջին')).toBeTruthy();
   expect(screen.getByText('Պրեմիում')).toBeTruthy();
   expect(screen.getAllByText('500 ֏').length).toBeGreaterThan(0);
-  fireEvent.press(screen.getByText('Պրեմիում'));
+  await fireEvent.press(screen.getByText('Պրեմիում'));
   expect(await screen.findByText('TEST Կաթ Carrefour')).toBeTruthy();
   expect(screen.getAllByText('1 200 ֏').length).toBeGreaterThan(0);
   expect(screen.getByText(/Պանիր — Ընտրեք տեսակը/)).toBeTruthy();
@@ -124,16 +124,16 @@ test('shares the list with a code and joins another list by code', async () => {
   mocked.shareList.mockResolvedValue({ code: 'ABCD2345' });
   const family: ShoppingList = { ...list, id: 9, name: 'TEST Ընտանիք', items: [] };
   mocked.joinList.mockResolvedValue(family);
-  renderScreen(SmartListScreen);
+  await renderScreen(SmartListScreen);
 
-  fireEvent.press(await screen.findByText('📋'));
-  fireEvent.press(await screen.findByText(/Կիսվել այս ցուցակով/));
+  await fireEvent.press(await screen.findByText('📋'));
+  await fireEvent.press(await screen.findByText(/Կիսվել այս ցուցակով/));
   expect(await screen.findByText('Կոդ՝ ABCD2345')).toBeTruthy();
   expect(mocked.shareList).toHaveBeenCalledWith(3);
   expect(shareSpy).toHaveBeenCalledWith({ message: expect.stringContaining('ABCD2345') });
 
-  fireEvent.changeText(screen.getByLabelText('Ցուցակի կոդ'), 'wxyz-6789');
-  fireEvent.press(screen.getByText('Միանալ'));
+  await fireEvent.changeText(screen.getByLabelText('Ցուցակի կոդ'), 'wxyz-6789');
+  await fireEvent.press(screen.getByText('Միանալ'));
   await waitFor(() => expect(mocked.joinList).toHaveBeenCalledWith('wxyz-6789'));
   shareSpy.mockRestore();
 });

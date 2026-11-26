@@ -107,7 +107,7 @@ export function DealsScreen() {
         }
         onEndReached={() => deals.hasNextPage && !deals.isFetchingNextPage && deals.fetchNextPage()}
         onEndReachedThreshold={0.5}
-        refreshControl={<RefreshControl refreshing={deals.isRefetching} onRefresh={() => deals.refetch()} />}
+        refreshControl={<RefreshControl refreshing={deals.isRefetching} onRefresh={() => { deals.refetch(); }} />}
       />
     </SafeAreaView>
   );

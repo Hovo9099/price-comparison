@@ -17,7 +17,7 @@ test('lists the nearest branch per store using a rounded position', async () => 
     { storeId: 1, storeName: 'SAS Supermarket', storeSlug: 'sas', locationId: 2, name: 'TEST SAS', address: null,
       latitude: 40.2, longitude: 44.52, distanceKm: 2.46 },
   ]);
-  render(<I18nProvider><NearbyScreen /></I18nProvider>);
+  await render(<I18nProvider><NearbyScreen /></I18nProvider>);
   expect(await screen.findByText('TEST Branch')).toBeTruthy();
   expect(screen.getByText('350 մ')).toBeTruthy();
   expect(screen.getByText('2.5 կմ')).toBeTruthy();
@@ -26,7 +26,7 @@ test('lists the nearest branch per store using a rounded position', async () => 
 
 test('asks for permission instead of locating when not granted', async () => {
   (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
-  render(<I18nProvider><NearbyScreen /></I18nProvider>);
+  await render(<I18nProvider><NearbyScreen /></I18nProvider>);
   await waitFor(() => expect(screen.getByText(/տեղորոշման թույլտվություն/)).toBeTruthy());
   expect(mocked.nearbyStores).not.toHaveBeenCalled();
 });

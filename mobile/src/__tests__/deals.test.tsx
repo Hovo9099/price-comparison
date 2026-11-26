@@ -23,10 +23,10 @@ const deal = (name: string, verdict: Deal['verdict'], pct: number): Deal => ({
   verdict, maxPaid90Days: verdict === 'GENUINE' ? 600 : 520, historyDays: 40, since: new Date().toISOString(), cheapestAnywhere: true,
 });
 
-function renderDeals() {
+async function renderDeals() {
   const Stack = createNativeStackNavigator();
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } });
-  return render(
+  return await render(
     <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
       <QueryClientProvider client={qc}>
         <I18nProvider>
@@ -48,14 +48,14 @@ test('shows verdicts and asks for questionable deals only when toggled', async (
       : [deal('TEST Պանիր', 'GENUINE', 17)],
     page: 0, size: 20, total: p.includeInflated ? 2 : 1,
   }));
-  renderDeals();
+  await renderDeals();
   expect(await screen.findByText('TEST Պանիր')).toBeTruthy();
   expect(screen.getByText('✓ Իրական զեղչ')).toBeTruthy();
   expect(screen.getByText(/Վերջին 90 օրում գինը եղել է 600/)).toBeTruthy();
   expect(screen.queryByText('TEST Թեյ')).toBeNull();
   expect(mocked.deals).toHaveBeenLastCalledWith(expect.objectContaining({ includeInflated: false }));
 
-  fireEvent(screen.getByLabelText(/կասկածելի զեղչերը/), 'valueChange', true);
+  await fireEvent(screen.getByLabelText(/կասկածելի զեղչերը/), 'valueChange', true);
   expect(await screen.findByText('TEST Թեյ')).toBeTruthy();
   expect(screen.getByText('⚠ Կասկածելի զեղչ')).toBeTruthy();
   await waitFor(() => expect(mocked.deals).toHaveBeenLastCalledWith(expect.objectContaining({ includeInflated: true })));

@@ -39,9 +39,9 @@ function Details({ route }: { route: { params: { productId: number; title?: stri
   return <Text>details {route.params.productId} {route.params.title}</Text>;
 }
 
-function renderScan() {
+async function renderScan() {
   const Stack = createNativeStackNavigator();
-  return render(
+  return await render(
     <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}>
       <I18nProvider>
         <NavigationContainer>
@@ -63,8 +63,8 @@ test('a scanned barcode opens the product', async () => {
     id: 42, name: 'TEST Մածուն 500գ', nameEn: 'TEST Matsun 500g', brand: null, barcode: mockScannedCode, sizeValue: 500,
     sizeUnit: 'g', size: '500 գ', variant: null, soldByWeight: false, imageUrl: null, category: null, aliases: [],
   });
-  renderScan();
-  fireEvent.press(await screen.findByTestId('fake-camera'));
+  await renderScan();
+  await fireEvent.press(await screen.findByTestId('fake-camera'));
   expect(await screen.findByText(/details 42/)).toBeTruthy();
   expect(mocked.productByBarcode).toHaveBeenCalledWith('0999999000017');
 });
@@ -73,17 +73,17 @@ test('an unknown barcode shows a message and can be rescanned', async () => {
   mockScannedCode = '4000000000000';
   const { ApiError } = jest.requireMock('../api/client');
   mocked.productByBarcode.mockRejectedValue(new ApiError(404, 'not found'));
-  renderScan();
-  fireEvent.press(await screen.findByTestId('fake-camera'));
+  await renderScan();
+  await fireEvent.press(await screen.findByTestId('fake-camera'));
   await waitFor(() => expect(screen.getByText(/4000000000000/)).toBeTruthy());
-  fireEvent.press(screen.getByRole('button', { name: /Կրկին սկանավորել|Scan again/ }));
+  await fireEvent.press(screen.getByRole('button', { name: /Կրկին սկանավորել|Scan again/ }));
   expect(await screen.findByTestId('fake-camera')).toBeTruthy();
 });
 
 test('non-numeric codes (QR, URLs) are ignored', async () => {
   mockScannedCode = 'https://example.invalid';
-  renderScan();
-  fireEvent.press(await screen.findByTestId('fake-camera'));
+  await renderScan();
+  await fireEvent.press(await screen.findByTestId('fake-camera'));
   expect(mocked.productByBarcode).not.toHaveBeenCalled();
 });
 

@@ -61,7 +61,7 @@ export function WatchlistScreen() {
       keyExtractor={(w) => String(w.id)}
       renderItem={renderItem}
       ListEmptyComponent={<Empty text={t.watch.empty} />}
-      refreshControl={<RefreshControl refreshing={watches.isRefetching} onRefresh={() => watches.refetch()} />}
+      refreshControl={<RefreshControl refreshing={watches.isRefetching} onRefresh={() => { watches.refetch(); }} />}
     />
   );
 }

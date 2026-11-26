@@ -96,10 +96,10 @@ const basket: BasketOptimization = {
 
 const Stack = createNativeStackNavigator();
 
-function renderScreen(component: React.ComponentType, params?: object) {
+async function renderScreen(component: React.ComponentType, params?: object) {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity }, mutations: { gcTime: Infinity } } });
   const metrics = { frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } };
-  return render(
+  return await render(
     <SafeAreaProvider initialMetrics={metrics}>
     <QueryClientProvider client={qc}>
       <I18nProvider>
@@ -137,7 +137,7 @@ beforeEach(() => {
 });
 
 test('product details shows cheapest price, store comparison and adds to list', async () => {
-  renderScreen(ProductDetailsScreen, { productId: 1 });
+  await renderScreen(ProductDetailsScreen, { productId: 1 });
   expect((await screen.findAllByText('Ամենաէժան')).length).toBeGreaterThan(0);
   expect(screen.getAllByText('570 ֏').length).toBeGreaterThan(0);
   expect(screen.getByText('Carrefour')).toBeTruthy();
@@ -145,13 +145,13 @@ test('product details shows cheapest price, store comparison and adds to list', 
   expect(screen.getByText('Չի գտնվել')).toBeTruthy();
   expect(screen.getByText('Միացված չէ')).toBeTruthy();
   expect(screen.getByText('Գների պատմություն')).toBeTruthy();
-  fireEvent.press(screen.getByText('+ Ավելացնել ցուցակին'));
+  await fireEvent.press(screen.getByText('+ Ավելացնել ցուցակին'));
   await waitFor(() => expect(mocked.addItem).toHaveBeenCalledWith(7, { productId: 1, quantity: 1 }));
   expect(await screen.findByText('✓ Ավելացվեց ցուցակին')).toBeTruthy();
 });
 
 test('search screen queries the API and lists results', async () => {
-  renderScreen(SearchScreen, { query: 'կոլա' });
+  await renderScreen(SearchScreen, { query: 'կոլա' });
   expect(await screen.findByText('TEST Կոլա 1.5լ')).toBeTruthy();
   expect(mocked.searchProducts).toHaveBeenCalledWith('կոլա', 0, undefined);
   expect(screen.getByText('2 խանութում')).toBeTruthy();
@@ -162,14 +162,14 @@ test('search screen queries the API and lists results', async () => {
 });
 
 test('shopping list shows items and the basket button', async () => {
-  renderScreen(ShoppingListScreen);
+  await renderScreen(ShoppingListScreen);
   expect(await screen.findByText('TEST Կոլա 1.5լ')).toBeTruthy();
   expect(screen.getByText('📝 Հաց')).toBeTruthy();
   expect(screen.getByText('Գտնել ամենաէժան զամբյուղը')).toBeTruthy();
 });
 
 test('basket screen shows single-store, combination, total and savings', async () => {
-  renderScreen(BasketScreen);
+  await renderScreen(BasketScreen);
   expect(await screen.findByText('ԱՄԵՆԱԷԺԱՆ ՄԵԿ ԽԱՆՈՒԹՈՒՄ')).toBeTruthy();
   expect(screen.getAllByText('1 200 ֏').length).toBeGreaterThan(0);
   expect(screen.getByText('ԱՄԵՆԱԷԺԱՆ ՀԱՄԱԴՐՈՒԹՅՈՒՆ')).toBeTruthy();

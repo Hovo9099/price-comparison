@@ -219,7 +219,7 @@ export function SmartListScreen() {
             <Pressable style={styles.compareBtn} onPress={() => navigation.navigate('Results')}>
               <Text style={styles.compareText}>{t.smart.compare} →</Text>
             </Pressable>
-          ) : null
+          ) : undefined
         }
       />
       <ListsModal visible={listsOpen} onClose={() => setListsOpen(false)} currentId={list.data.id} />

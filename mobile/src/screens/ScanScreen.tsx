@@ -96,7 +96,7 @@ export function ScanScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#000' },
-  overlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center' },
+  overlay: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   frame: { width: 260, height: 160, borderWidth: 3, borderColor: '#fff', borderRadius: radius.md },
   hint: { marginTop: spacing.lg, color: '#fff', fontSize: 15, fontWeight: '600', textAlign: 'center',
     paddingHorizontal: spacing.lg },

@@ -6,7 +6,7 @@ import { api } from './api/client';
 import { getDeviceId } from './storage/local';
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({ shouldShowAlert: true, shouldPlaySound: true, shouldSetBadge: false }),
+  handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }),
 });
 
 function projectId(): string | undefined {

@@ -30,7 +30,7 @@ Crawlers respect robots.txt, use an identifying User-Agent, rate-limit per host 
 ## Prerequisites
 
 - Java 21, Maven 3.8+
-- Node.js 18.18+ (Node 20 LTS recommended) and npm
+- Node.js 22.13+ and npm (the mobile app uses Expo SDK 58; the admin also works on Node 18+)
 - Docker + Docker Compose (for PostgreSQL), **or** any PostgreSQL 14+ you run yourself
 - For the mobile app: the Expo Go app on a phone, or an Android emulator / iOS simulator
 
@@ -155,7 +155,7 @@ npm install
 EXPO_PUBLIC_API_URL=http://<your-computer-LAN-IP>:8080 npx expo start
 ```
 
-Scan the QR code with Expo Go (Android/iOS), or press `a` (Android emulator) / `i` (iOS simulator).
+Scan the QR code with the current Expo Go from the App Store / Google Play (SDK 58; iOS and Android), or press `a` (Android emulator) / `i` (iOS simulator).
 Defaults without `EXPO_PUBLIC_API_URL`: `http://10.0.2.2:8080` on the Android emulator, `http://localhost:8080`
 on iOS. The server address can also be changed in the app (Պրոֆիլ → Սերվերի հասցե).
 
