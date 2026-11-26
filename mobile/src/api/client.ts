@@ -82,6 +82,9 @@ export const api = {
     itemId: number,
     body: { quantity?: number; sizeValue?: number; sizeUnit?: string; clearSize?: boolean; conceptCode?: string; productId?: number },
   ) => request<ShoppingList>(`/api/shopping-lists/${listId}/items/${itemId}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  shareList: (id: number) => request<{ code: string }>(`/api/shopping-lists/${id}/share`, { method: 'POST' }),
+  unshareList: (id: number) => request<void>(`/api/shopping-lists/${id}/share`, { method: 'DELETE' }),
+  joinList: (code: string) => request<ShoppingList>(`/api/shopping-lists/shared/${encodeURIComponent(code.trim())}`),
   lists: (ids: number[]) => request<ShoppingList[]>(`/api/shopping-lists?ids=${ids.join(',')}`),
   parse: (text: string) => request<ParseResult>('/api/shopping-lists/parse', { method: 'POST', body: JSON.stringify({ text }) }),
   parseInto: (listId: number, text: string) =>

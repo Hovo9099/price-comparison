@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, FlatList, Modal, Pressable, Share, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
@@ -134,6 +134,13 @@ export function SmartListScreen() {
     if (list.data) rememberList(list.data.id);
   }, [list.data?.id]);
 
+  // a shared list may have been changed on another phone
+  useFocusEffect(
+    useCallback(() => {
+      list.refetch();
+    }, [list.refetch]),
+  );
+
   const parse = useMutation({
     mutationFn: (input: string) => api.parseInto(list.data!.id, input),
     onSuccess: (r) => {
@@ -222,6 +229,8 @@ export function SmartListScreen() {
 
 function ListsModal({ visible, onClose, currentId }: { visible: boolean; onClose: () => void; currentId: number }) {
   const { t } = useI18n();
+  const [code, setCode] = useState<string | null>(null);
+  const [joinCode, setJoinCode] = useState('');
   const qc = useQueryClient();
   const lists = useQuery({
     queryKey: ['savedLists', visible],
@@ -236,6 +245,27 @@ function ListsModal({ visible, onClose, currentId }: { visible: boolean; onClose
     await qc.invalidateQueries({ queryKey: keys.list });
     onClose();
   };
+  const current = (lists.data ?? []).find((l) => l.id === currentId);
+  const share = useMutation({
+    mutationFn: () => api.shareList(currentId),
+    onSuccess: async (r) => {
+      setCode(r.code);
+      try {
+        await Share.share({ message: t.smart.shareMessage(current?.name ?? '', r.code) });
+      } catch {
+        // the user can still read the code on screen
+      }
+    },
+  });
+  const unshare = useMutation({ mutationFn: () => api.unshareList(currentId), onSuccess: () => setCode(null) });
+  const join = useMutation({
+    mutationFn: () => api.joinList(joinCode),
+    onSuccess: async (l) => {
+      setJoinCode('');
+      await rememberList(l.id);
+      await open(l.id);
+    },
+  });
   const create = useMutation({
     mutationFn: async () => api.createList(t.smart.listName((lists.data?.length ?? 0) + 1)),
     onSuccess: async (l) => {
@@ -257,6 +287,41 @@ function ListsModal({ visible, onClose, currentId }: { visible: boolean; onClose
           <Pressable style={styles.addBtn} onPress={() => create.mutate()}>
             <Text style={styles.addBtnText}>+ {t.smart.newList}</Text>
           </Pressable>
+
+          <View style={styles.shareBox}>
+            <Pressable style={styles.shareBtn} onPress={() => share.mutate()} disabled={share.isPending} accessibilityRole="button">
+              <Text style={styles.shareBtnText}>🔗 {t.smart.share}</Text>
+            </Pressable>
+            {code ? (
+              <>
+                <Text style={styles.shareCode} selectable>{t.smart.shareCode(code)}</Text>
+                <Text style={styles.listCount}>{t.smart.shareHint}</Text>
+                <Pressable onPress={() => unshare.mutate()} accessibilityRole="button">
+                  <Text style={styles.stopShare}>{t.smart.stopSharing}</Text>
+                </Pressable>
+              </>
+            ) : null}
+            <View style={styles.joinRow}>
+              <TextInput
+                style={styles.joinInput}
+                value={joinCode}
+                onChangeText={setJoinCode}
+                placeholder={t.smart.joinPlaceholder}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                accessibilityLabel={t.smart.joinPlaceholder}
+              />
+              <Pressable
+                style={[styles.joinBtn, joinCode.replace(/[\s-]/g, '').length !== 8 && { opacity: 0.5 }]}
+                disabled={joinCode.replace(/[\s-]/g, '').length !== 8 || join.isPending}
+                onPress={() => join.mutate()}
+                accessibilityRole="button"
+              >
+                <Text style={styles.shareBtnText}>{t.smart.join}</Text>
+              </Pressable>
+            </View>
+            {join.isError ? <Text style={styles.joinError}>{t.smart.joinFailed}</Text> : null}
+          </View>
         </Pressable>
       </Pressable>
     </Modal>
@@ -310,6 +375,16 @@ const styles = StyleSheet.create({
   compareText: { color: '#1C1300', fontSize: 18, fontWeight: '900' },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' },
   modal: { backgroundColor: colors.card, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: spacing.lg, gap: spacing.sm, paddingBottom: spacing.xl * 2 },
+  shareBox: { marginTop: spacing.lg, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: spacing.md, gap: spacing.sm },
+  shareBtn: { paddingVertical: spacing.sm },
+  shareBtnText: { color: colors.primary, fontWeight: '800', fontSize: 15 },
+  shareCode: { fontSize: 22, fontWeight: '900', letterSpacing: 2, color: colors.text },
+  stopShare: { color: colors.danger, fontWeight: '600' },
+  joinRow: { flexDirection: 'row', gap: spacing.sm, alignItems: 'center' },
+  joinInput: { flex: 1, borderWidth: 1, borderColor: colors.border, borderRadius: radius.sm, paddingHorizontal: spacing.md,
+    paddingVertical: 10, fontSize: 16, letterSpacing: 1 },
+  joinBtn: { paddingHorizontal: spacing.lg, paddingVertical: 10, borderRadius: radius.sm, backgroundColor: colors.primarySoft },
+  joinError: { color: colors.danger },
   modalTitle: { fontSize: 20, fontWeight: '900', marginBottom: spacing.sm },
   listRow: { flexDirection: 'row', justifyContent: 'space-between', padding: spacing.md, borderRadius: radius.sm, backgroundColor: colors.background },
   listRowActive: { backgroundColor: colors.primarySoft },

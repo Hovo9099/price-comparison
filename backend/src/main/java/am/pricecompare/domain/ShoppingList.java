@@ -17,6 +17,8 @@ public class ShoppingList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    /** Random code other devices use to open this list; null = not shared. */
+    private String shareCode;
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)

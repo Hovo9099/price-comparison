@@ -70,7 +70,7 @@ java -jar target/price-comparison-backend.jar --spring.main.web-application-type
 
 Migrations live in `backend/src/main/resources/db/migration` (`V1` schema, `V2` real stores + categories —
 no products or prices, `V3` crawl heartbeat, `V4` activates Supermarket.am, `V5` smart shopping list, `V6` catalog
-coverage, `V7` Parma, `V8` price watches, `V9` price anomalies, `V10` manual store branches, `V11` Nor Zovq → zovq.am).
+coverage, `V7` Parma, `V8` price watches, `V9` price anomalies, `V10` manual store branches, `V11` Nor Zovq → zovq.am, `V12` list share codes).
 
 ## 4. Start the backend
 
@@ -164,7 +164,7 @@ Release builds should talk to the backend over HTTPS (Android blocks clear-text 
 Screens: Shopping list (multi-product input with suggestions, type choices, size chips, quantities, saved lists),
 Results (Cheapest / Mid-range / Premium tabs), Preferences, Home (search, categories, recent searches, price drops, shopping list), Search, Product details
 (cheapest price, store comparison with "updated X ago", add to list, price-history chart), Price comparison,
-Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Deals tab (real vs questionable discounts), Nearby stores (Home → 📍; branches crawled from Yerevan City or entered in Admin → Store branches), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
+Shopping list, Basket optimization, Barcode scanner (Home → Սկանավորել; opens the product's store-by-store prices), Deals tab (real vs questionable discounts), Nearby stores (Home → 📍; branches crawled from Yerevan City or entered in Admin → Store branches), Shared lists (List → 📋 → share code / join with code), Price watches (product page → Հետևել գնին; Profile → Հետևվող ապրանքներ), Profile (language հայերեն/English, server, data sources).
 
 ## Production
 
@@ -242,6 +242,8 @@ kat, dzu 10, 2 hac, karag, coca cola 1.5l, kartofil 2kg, panir
 | POST | `/api/shopping-lists/{id}/parse` | recognise and add (`{"text":"...","add":true}`) |
 | POST | `/api/shopping-lists/{id}/compare` | cheapest / mid-range / premium baskets (`{"maxStores":2,"includeDelivery":true,"allowStalePrices":false,"preferredBrands":["Marianna"]}`) |
 | GET | `/api/shopping-lists?ids=1,2` | saved lists |
+| POST/DELETE | `/api/shopping-lists/{id}/share` | get (create) / revoke the list's share code |
+| GET | `/api/shopping-lists/shared/{code}` | open a shared list on another phone (case and dashes ignored) |
 | GET | `/api/lexicon/suggest?q=kar` | concept suggestions while typing |
 | GET | `/api/lexicon/concepts` | all concepts with sizes and type choices |
 | GET | `/api/products/{id}/price-history` | price history (alias of `/history`) |

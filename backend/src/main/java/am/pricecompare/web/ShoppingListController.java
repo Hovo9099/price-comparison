@@ -28,10 +28,35 @@ public class ShoppingListController {
 
     private final ShoppingListService service;
     private final am.pricecompare.service.SmartListService smart;
+    private final am.pricecompare.service.ListShareService sharing;
 
-    public ShoppingListController(ShoppingListService service, am.pricecompare.service.SmartListService smart) {
+    public ShoppingListController(ShoppingListService service, am.pricecompare.service.SmartListService smart,
+                                  am.pricecompare.service.ListShareService sharing) {
         this.service = service;
         this.smart = smart;
+        this.sharing = sharing;
+    }
+
+    public record ShareCodeDto(String code) {
+    }
+
+    @PostMapping("/{id}/share")
+    @Operation(summary = "Share code of the list (created on first call); other phones open the list with it")
+    public ShareCodeDto share(@PathVariable long id) {
+        return new ShareCodeDto(sharing.share(id));
+    }
+
+    @DeleteMapping("/{id}/share")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Stop sharing: the old code no longer opens the list")
+    public void unshare(@PathVariable long id) {
+        sharing.revoke(id);
+    }
+
+    @GetMapping("/shared/{code}")
+    @Operation(summary = "Open a shared list by its code (case and dashes ignored)")
+    public ShoppingListDto joinShared(@PathVariable String code) {
+        return sharing.join(code);
     }
 
     @GetMapping

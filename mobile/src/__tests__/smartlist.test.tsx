@@ -16,6 +16,7 @@ jest.mock('../api/client', () => ({
   api: {
     getList: jest.fn(), createList: jest.fn(), parseInto: jest.fn(), addItem: jest.fn(), patchItem: jest.fn(),
     removeItem: jest.fn(), concepts: jest.fn(), suggestConcepts: jest.fn(), compare: jest.fn(), lists: jest.fn(),
+    shareList: jest.fn(), unshareList: jest.fn(), joinList: jest.fn(),
   },
 }));
 const mocked = api as jest.Mocked<typeof api>;
@@ -114,4 +115,25 @@ test('results show three strategies with totals, reasons and excluded items', as
   expect(screen.getAllByText('1 200 ֏').length).toBeGreaterThan(0);
   expect(screen.getByText(/Պանիր — Ընտրեք տեսակը/)).toBeTruthy();
   expect(screen.getByText(/Delivery fees and travel costs are not included/)).toBeTruthy();
+});
+
+test('shares the list with a code and joins another list by code', async () => {
+  const { Share } = require('react-native');
+  const shareSpy = jest.spyOn(Share, 'share').mockResolvedValue({ action: 'sharedAction' });
+  mocked.lists.mockResolvedValue([list]);
+  mocked.shareList.mockResolvedValue({ code: 'ABCD2345' });
+  const family: ShoppingList = { ...list, id: 9, name: 'TEST Ընտանիք', items: [] };
+  mocked.joinList.mockResolvedValue(family);
+  renderScreen(SmartListScreen);
+
+  fireEvent.press(await screen.findByText('📋'));
+  fireEvent.press(await screen.findByText(/Կիսվել այս ցուցակով/));
+  expect(await screen.findByText('Կոդ՝ ABCD2345')).toBeTruthy();
+  expect(mocked.shareList).toHaveBeenCalledWith(3);
+  expect(shareSpy).toHaveBeenCalledWith({ message: expect.stringContaining('ABCD2345') });
+
+  fireEvent.changeText(screen.getByLabelText('Ցուցակի կոդ'), 'wxyz-6789');
+  fireEvent.press(screen.getByText('Միանալ'));
+  await waitFor(() => expect(mocked.joinList).toHaveBeenCalledWith('wxyz-6789'));
+  shareSpy.mockRestore();
 });
